@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import useResizeObserver from "use-resize-observer";
+import mergeRefs from "./merge-refs";
 
 type Props = {
   children: (dimens: { width: number; height: number }) => ReactElement;
@@ -18,6 +19,7 @@ export const FillFlexParent = React.forwardRef(function FillFlexParent(
   forwardRef
 ) {
   const { ref, width, height } = useResizeObserver();
+  console.log(ref, width, height);
   return (
     <div style={style} ref={mergeRefs(ref, forwardRef)}>
       {width && height ? props.children({ width, height }) : null}
@@ -25,16 +27,4 @@ export const FillFlexParent = React.forwardRef(function FillFlexParent(
   );
 });
 
-type AnyRef = React.MutableRefObject<any> | React.RefCallback<any> | null;
 
-export default function mergeRefs(...refs: AnyRef[]) {
-  return (instance: any) => {
-    refs.forEach((ref) => {
-      if (typeof ref === "function") {
-        ref(instance);
-      } else if (ref != null) {
-        ref.current = instance;
-      }
-    });
-  };
-}

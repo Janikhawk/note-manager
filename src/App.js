@@ -1,39 +1,29 @@
 import { Tree } from 'react-arborist';
 import * as icons from "react-icons/md";
 import { BsTree } from "react-icons/bs";
-import styles from './gmail-styles.css';
+import './tree-styles.css';
 import { SiGmail } from "react-icons/si";
 
 import NoteList from './components/NoteList';
 import clsx from 'clsx';
-import { gmailData } from './gmail-data';
+import { folderData } from './folder-data';
 import { useState } from 'react';
 import { FillFlexParent } from './components/fill-flex';
+import * as faIcons from "react-icons/fa";
 
-const App = () => {
-  // return <div className="container">
-  //   <NoteList/>
-  // </div>
+
+export default function App() {
   const [term, setTerm] = useState("");
-
   return (
-    <div className={styles.page}>
-      <div className={styles.mainContent}>
-        <div className={styles.sidebar}>
-          <div className={styles.header}>
-            <icons.MdMenu />
-            <SiGmail />
-            <h1>Gmail</h1>
-          </div>
-          <button className={styles.composeButton}>
-            <icons.MdOutlineCreate />
-            Compose
-          </button>
+    <div className="page">
+      <div className="mainContent">
+        <div className="sidebar">
           <FillFlexParent>
             {({ width, height }) => {
               return (
                 <Tree
-                  initialData={gmailData}
+                  initialData={folderData}
+                  openByDefault={false}
                   width={width}
                   height={height}
                   rowHeight={32}
@@ -54,23 +44,23 @@ const App = () => {
 };
 
 function Node({ node, style, dragHandle }) {
-  console.log(node);
-  console.log(style);
-  console.log(dragHandle)
-  const Icon = node.data.icon || BsTree;
+  // console.log(node);
+  const Icon = node.isOpen ? faIcons.FaRegFolderOpen : node.data.icon || BsTree;
   return (
     <div
       ref={dragHandle}
       style={style}
-      className={clsx(styles.node, node.state)}
-      onClick={() => node.isInternal && node.toggle()}
+      className={clsx('node', node.state)}
+      onClick={() => {
+        node.isInternal && node.toggle();
+        console.log(node)
+      }}
     >
       <FolderArrow node={node} />
       <span>
         <Icon />
       </span>
       <span>{node.isEditing ? <Input node={node} /> : node.data.name}</span>
-      <span>{node.data.unread === 0 ? null : node.data.unread}</span>
     </div>
   );
 }
@@ -101,8 +91,7 @@ function FolderArrow({ node }) {
 }
 
 function Cursor({ top, left }) {
-  return <div className={styles.dropCursor} style={{ top, left }}></div>;
+  return <div className='dropCursor' style={{ top, left }}></div>;
 }
 
-export default App;
 
