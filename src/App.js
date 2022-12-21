@@ -1,112 +1,73 @@
 import { Tree } from 'react-arborist';
 import * as icons from "react-icons/md";
+import { BsTree } from "react-icons/bs";
+import styles from './gmail-styles.css';
+import { SiGmail } from "react-icons/si";
 
 import NoteList from './components/NoteList';
-
-export const gmailData = [
-  {
-    id: "1",
-    name: "Inbox",
-    unread: 1,
-  },
-  {
-    id: "2",
-    name: "Starred",
-    unread: 0,
-  },
-  {
-    id: "3",
-    name: "Snoozed",
-    unread: 0,
-  },
-  {
-    id: "4",
-    name: "Sent",
-    unread: 0,
-  },
-  {
-    id: "5",
-    name: "Drafts",
-    unread: 14,
-  },
-  {
-    id: "6",
-    name: "Spam",
-    unread: 54,
-  },
-  {
-    id: "7",
-    name: "Important",
-    unread: 0,
-  },
-  {
-    id: "8",
-    name: "Chats",
-    unread: 0,
-  },
-  {
-    id: "9",
-    name: "Scheduled",
-    unread: 0,
-  },
-  {
-    id: "10",
-    name: "All Mail",
-    unread: 0,
-  },
-  {
-    id: "11",
-    name: "Trash",
-    unread: 0,
-  },
-  {
-    id: "12",
-    name: "Categories",
-    children: [
-      {
-        id: "13",
-        name: "Social",
-        unread: 946,
-      },
-      {
-        id: "14",
-        name: "Updates",
-        unread: 4580,
-      },
-      {
-        id: "15",
-        name: "Forums",
-        unread: 312,
-      },
-      {
-        id: "16",
-        name: "Promotions",
-        unread: 312,
-      },
-    ],
-  },
-];
+import clsx from 'clsx';
+import { gmailData } from './gmail-data';
+import { useState } from 'react';
+import { FillFlexParent } from './components/fill-flex';
 
 const App = () => {
   // return <div className="container">
   //   <NoteList/>
   // </div>
+  const [term, setTerm] = useState("");
+
   return (
-    <Tree data={gmailData}>
-      {Node}
-    </Tree>
+    <div className={styles.page}>
+      <div className={styles.mainContent}>
+        <div className={styles.sidebar}>
+          <div className={styles.header}>
+            <icons.MdMenu />
+            <SiGmail />
+            <h1>Gmail</h1>
+          </div>
+          <button className={styles.composeButton}>
+            <icons.MdOutlineCreate />
+            Compose
+          </button>
+          <FillFlexParent>
+            {({ width, height }) => {
+              return (
+                <Tree
+                  initialData={gmailData}
+                  width={width}
+                  height={height}
+                  rowHeight={32}
+                  renderCursor={Cursor}
+                  searchTerm={term}
+                  paddingBottom={32}
+                >
+                  {Node}
+                </Tree>
+              );
+            }}
+          </FillFlexParent>
+        </div>
+        
+      </div>
+    </div>
   );
 };
 
 function Node({ node, style, dragHandle }) {
+  console.log(node);
+  console.log(style);
+  console.log(dragHandle)
+  const Icon = node.data.icon || BsTree;
   return (
     <div
       ref={dragHandle}
       style={style}
+      className={clsx(styles.node, node.state)}
       onClick={() => node.isInternal && node.toggle()}
     >
       <FolderArrow node={node} />
       <span>
+        <Icon />
       </span>
       <span>{node.isEditing ? <Input node={node} /> : node.data.name}</span>
       <span>{node.data.unread === 0 ? null : node.data.unread}</span>
@@ -139,4 +100,9 @@ function FolderArrow({ node }) {
   );
 }
 
+function Cursor({ top, left }) {
+  return <div className={styles.dropCursor} style={{ top, left }}></div>;
+}
+
 export default App;
+
