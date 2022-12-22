@@ -1,15 +1,14 @@
 import { Tree } from 'react-arborist';
 import * as icons from "react-icons/md";
-import { BsTree } from "react-icons/bs";
 import '../styles/tree-styles.css';
 import clsx from 'clsx';
-import { folderData } from '../services/folder-data';
+// import { folderData } from '../services/folder-data';
 import { useState } from 'react';
 import { FillFlexParent } from '../components/fill-flex';
 import * as faIcons from "react-icons/fa";
 
 
-export default function FolderTree({selectNoteById}) {
+export default function FolderTree({selectNoteById, folderData}) {
   const [term, setTerm] = useState("");
 
   return (
@@ -17,7 +16,7 @@ export default function FolderTree({selectNoteById}) {
             {({ width, height }) => {
               return (
                 <Tree
-                  initialData={folderData}
+                  initialData={folderData ? folderData : []}
                   openByDefault={false}
                   width={width}
                   height={height}
@@ -38,7 +37,7 @@ export default function FolderTree({selectNoteById}) {
 };
 
 function Node({ node, style, dragHandle }) {
-  const Icon = node.isOpen ? faIcons.FaRegFolderOpen : node.data.icon || BsTree;
+  const Icon = node.type === 'FILE' ? faIcons.FaRegFileAlt : node.isOpen ? faIcons.FaRegFolderOpen : faIcons.FaRegFolder || faIcons.FaRegFolder;
   return (
     <div
       ref={dragHandle}
@@ -53,7 +52,7 @@ function Node({ node, style, dragHandle }) {
       <span>
         <Icon />
       </span>
-      <span>{node.isEditing ? <Input node={node} /> : node.data.name}</span>
+      <span>{node.isEditing ? <Input node={node} /> : node.data.title}</span>
     </div>
   );
 }

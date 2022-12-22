@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { createNote, updateNote } from "../services/note-service";
 
@@ -10,43 +11,35 @@ export async function createAction({ request, params }) {
 }
 
 export default function CreateNote() {
-    const note = {
-        title: null,
-        description: null
-    };
+    const [note, setNote] = useState({title: null, description: null, type: null})
+
+    // const note = {
+    //     title: null,
+    //     description: null,
+    //     type: null,
+    // };
     const navigate = useNavigate();
 
     return (
         <Form method="post" id="note-form">
-            {/* <p>
-                <span>Title</span>
-                <input
-                    placeholder="Title"
-                    aria-label="Title"
-                    type="text"
-                    name="title"
-                    defaultValue={note.title}
-                />
-            </p> */}
+            <label>
+                <span>Type</span>
+                <input type="radio" name="type" value='FILE' onChange={(event) => setNote({...note, type: event.target.value})}/> File
+                <input type="radio" name="type" value='FOLDER' onChange={(event) => setNote({...note, type: event.target.value})}/> Folder
+            </label>
             <label>
                 <span>Title</span>
                 <input
+                    className="text-input"
                     type="text"
                     name="title"
                     placeholder="Title"
                     defaultValue={note.title}
+                    onChange={(event) => setNote({ ...note, title: event.target.value})}
                 />
             </label>
-            {/* <label>
-                <span>Avatar URL</span>
-                <input
-                    placeholder="https://example.com/avatar.jpg"
-                    aria-label="Avatar URL"
-                    type="text"
-                    name="avatar"
-                    defaultValue={note.avatar}
-                />
-            </label> */}
+            <>
+            {note.type === 'FILE' ? (
             <label>
                 <span>Description</span>
                 <textarea
@@ -55,6 +48,9 @@ export default function CreateNote() {
                     rows={6}
                 />
             </label>
+            ) : (<></>)}
+            </>
+            
             <p>
                 <button type="submit">Save</button>
                 <button

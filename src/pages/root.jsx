@@ -30,7 +30,6 @@ export default function Root() {
 
     const selectNoteById = (noteId) => {
         if (!noteId) return;
-        console.log(noteId);
         navigate(`notes/${noteId}`)
     }
 
@@ -41,7 +40,7 @@ export default function Root() {
                     <Form id='search-form' role='search'>
                         <input
                             id='q'
-                            className={searching ? 'loading' : ''}
+                            className={[searching ? 'loading' : '', 'text-input'].join(' ')}
                             aria-label='Search notes'
                             placeholder='Search'
                             type='search'
@@ -62,7 +61,7 @@ export default function Root() {
                     </Form>
                 </div>
                 <nav>
-                    <FolderTree selectNoteById={selectNoteById}/>
+                    <FolderTree folderData={notes} selectNoteById={selectNoteById}/>
                     {/* {notes.length ? (
                         <ul>
                             {notes.map((note) => (

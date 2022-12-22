@@ -88,11 +88,11 @@
 }
 
 [role="treeitem"]:has(.node):hover {
-    background-color: rgba(255,255,255,.2);
+    background-color: rgba(147, 146, 146, 0.2);
 }
 
 [role="treeitem"][aria-selected="true"]:has(.node) {
-    background-color: rgba(255,255,255,.3);
+    background-color: rgba(142, 141, 141, 0.3);
     font-weight: 700;
 }
 
