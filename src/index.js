@@ -36,6 +36,13 @@ const router = createBrowserRouter([
             path: 'notes/new',
             element: <CreateNote/>,
             action: createAction,
+            loader: rootLoader,
+          },
+          {
+            path: 'notes/:noteId/new',
+            element: <CreateNote/>,
+            action: createAction,
+            loader: rootLoader,
           },
           {
             path: "notes/:noteId/edit",

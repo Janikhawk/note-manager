@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate } from "react-router-dom";
 import FolderTree from "./folder-tree";
 import { createNote, getNotes } from "../services/note-service";
@@ -6,27 +6,31 @@ import { createNote, getNotes } from "../services/note-service";
 
 export async function rootLoader({request}) {
     const url = new URL(request.url);
-    const q = url.searchParams.get('q');
-    const notes = await getNotes(q);
-    return {notes, q};
+    const searchInput = url.searchParams.get('searchInput');
+    const notes = await getNotes(searchInput);
+    return {notes, searchInput};
 }
 
-export async function rootAction() {
-    return redirect(`/notes/new`)
+export async function rootAction({request, params}) {
+    const urlArr = window.location.pathname.split('/');
+    const parentNoteId = urlArr[urlArr.length - 1];
+    return redirect(`/notes/${parentNoteId}/new`)
 }
 
 export default function Root() {
-    const {notes, q} = useLoaderData();
+    const {notes, searchInput} = useLoaderData();
+    console.log(notes);
     const navigation = useNavigation();
     const navigate = useNavigate();
-
     const submit = useSubmit();
+    const [data, setData] = useState({notes, searchInput});
 
-    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('q');
+    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
     useEffect(() => {
-        document.getElementById('q').value = q;
-    }, [q]);
+        document.getElementById('searchInput').value = searchInput;
+        //setData({notes, searchInput})
+    }, [searchInput]);
 
     const selectNoteById = (noteId) => {
         if (!noteId) return;
@@ -39,15 +43,15 @@ export default function Root() {
                 <div>
                     <Form id='search-form' role='search'>
                         <input
-                            id='q'
+                            id='searchInput'
                             className={[searching ? 'loading' : '', 'text-input'].join(' ')}
                             aria-label='Search notes'
                             placeholder='Search'
                             type='search'
-                            name='q'
-                            defaultValue={q}
+                            name='searchInput'
+                            defaultValue={searchInput}
                             onChange={(event) => {
-                                const isFirstSearch = q === null;
+                                const isFirstSearch = searchInput === null;
                                 submit(event.currentTarget.form, {
                                     replace: !isFirstSearch
                                 });
@@ -61,6 +65,7 @@ export default function Root() {
                     </Form>
                 </div>
                 <nav>
+                    {console.log(notes)}
                     <FolderTree folderData={notes} selectNoteById={selectNoteById}/>
                     {/* {notes.length ? (
                         <ul>

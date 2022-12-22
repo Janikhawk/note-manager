@@ -5,19 +5,13 @@ import { createNote, updateNote } from "../services/note-service";
 export async function createAction({ request, params }) {
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
-    const note = await createNote();
-    await updateNote(note.id, updates);
+    const note = await createNote({parentId: params.noteId, ...updates});
     return redirect(`/notes/${note.id}`);
 }
 
 export default function CreateNote() {
     const [note, setNote] = useState({title: null, description: null, type: null})
 
-    // const note = {
-    //     title: null,
-    //     description: null,
-    //     type: null,
-    // };
     const navigate = useNavigate();
 
     return (
@@ -25,7 +19,7 @@ export default function CreateNote() {
             <label>
                 <span>Type</span>
                 <input type="radio" name="type" value='FILE' onChange={(event) => setNote({...note, type: event.target.value})}/> File
-                <input type="radio" name="type" value='FOLDER' onChange={(event) => setNote({...note, type: event.target.value})}/> Folder
+                <input type="radio" name="type" value='FOLDER' onChange={(event) => setNote({...note, type: event.target.value, description: null})}/> Folder
             </label>
             <label>
                 <span>Title</span>

@@ -2,37 +2,36 @@ import { Tree } from 'react-arborist';
 import * as icons from "react-icons/md";
 import '../styles/tree-styles.css';
 import clsx from 'clsx';
-// import { folderData } from '../services/folder-data';
-import { useState } from 'react';
-import { FillFlexParent } from '../components/fill-flex';
+import { useState, useRef, useEffect } from 'react';
 import * as faIcons from "react-icons/fa";
+import { useLocation, useNavigation, useParams } from 'react-router-dom';
 
 
 export default function FolderTree({selectNoteById, folderData}) {
   const [term, setTerm] = useState("");
+  let {noteId} = useParams();
+  const treeRef = useRef();
+
+  useEffect(() => {
+    const tree = treeRef.current;
+    tree && tree.select(noteId);
+  }, [])
 
   return (
-          <FillFlexParent>
-            {({ width, height }) => {
-              return (
-                <Tree
-                  initialData={folderData ? folderData : []}
-                  openByDefault={false}
-                  width={width}
-                  height={height}
-                  rowHeight={32}
-                  renderCursor={Cursor}
-                  searchTerm={term}
-                  paddingBottom={32}
-                  onSelect={(nodes) => {
-                    selectNoteById(nodes[0]?.id);
-                  }}
-                >
-                  {Node}
-                </Tree>
-              );
-            }}
-          </FillFlexParent>
+    <Tree
+      ref={treeRef}
+      initialData={folderData ? folderData : []}
+      openByDefault={false}
+      rowHeight={32}
+      renderCursor={Cursor}
+      searchTerm={term}
+      paddingBottom={32}
+      onSelect={(nodes) => {
+        selectNoteById(nodes[0]?.id);
+      }}
+    >
+      {Node}
+    </Tree>
   );
 };
 
@@ -85,5 +84,3 @@ function FolderArrow({ node }) {
 function Cursor({ top, left }) {
   return <div className='dropCursor' style={{ top, left }}></div>;
 }
-
-

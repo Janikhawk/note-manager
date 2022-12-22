@@ -1,3 +1,4 @@
+import { getNodeText } from "@testing-library/react";
 import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
@@ -12,12 +13,17 @@ export async function getNotes(query) {
     return notes.sort(sortBy("last", "createdAt"));
 }
 
-export async function createNote() {
+export async function createNote({parentId, ...updates}) {
     await fakeNetwork();
     let id = Math.random().toString(36).substring(2, 9);
-    let note = { id, createdAt: Date.now() };
+    let note = { id, createdAt: Date.now(), ...updates };
     let notes = await getNotes();
-    notes.unshift(note);
+    if (parentId) {
+        const parentNote = notes.find(note => note.id === parentId);
+        parentNote && parentNote.children ? parentNote.children.push(note) : parentNote.children = [note];
+    } else {
+        notes.unshift(note);
+    }
     await set(notes);
     return note;
 }

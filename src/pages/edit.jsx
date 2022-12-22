@@ -2,6 +2,8 @@ import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
 import { updateNote } from "../services/note-service";
 
 export async function editAction({ request, params }) {
+    console.log(request);
+    console.log(params);
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
     await updateNote(params.noteId, updates);
@@ -14,23 +16,6 @@ export default function EditNote() {
 
     return (
         <Form method="post" id="note-form">
-            {/* <p>
-                <span>Name</span>
-                <input
-                    placeholder="First"
-                    aria-label="First name"
-                    type="text"
-                    name="first"
-                    defaultValue={note.first}
-                />
-                <input
-                    placeholder="Last"
-                    aria-label="Last name"
-                    type="text"
-                    name="last"
-                    defaultValue={note.last}
-                />
-            </p> */}
             <label>
                 <span>Title</span>
                 <input
@@ -40,16 +25,6 @@ export default function EditNote() {
                     defaultValue={note.title}
                 />
             </label>
-            {/* <label>
-                <span>Avatar URL</span>
-                <input
-                    placeholder="https://example.com/avatar.jpg"
-                    aria-label="Avatar URL"
-                    type="text"
-                    name="avatar"
-                    defaultValue={note.avatar}
-                />
-            </label> */}
             <label>
                 <span>Description</span>
                 <textarea
@@ -62,7 +37,7 @@ export default function EditNote() {
                 <button type="submit">Save</button>
                 <button
                     type="button"
-                    onClick={() => { navigate(-1);}}
+                    onClick={() => { navigate(-1); }}
                 >Cancel</button>
             </p>
         </Form>
