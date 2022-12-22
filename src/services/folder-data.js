@@ -2,7 +2,7 @@ import * as faIcons from "react-icons/fa";
 
 export const folderData = [
     {
-      id: "1",
+      id: "s7nziw1",
       name: "some",
       icon: faIcons.FaRegFolder,
     },

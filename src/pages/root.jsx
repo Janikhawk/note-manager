@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit } from "react-router-dom";
-import { createNote, getNotes } from "../note-service";
+import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate } from "react-router-dom";
+import FolderTree from "./folder-tree";
+import { createNote, getNotes } from "../services/note-service";
 
 
 export async function rootLoader({request}) {
@@ -17,6 +18,8 @@ export async function rootAction() {
 export default function Root() {
     const {notes, q} = useLoaderData();
     const navigation = useNavigation();
+    const navigate = useNavigate();
+
     const submit = useSubmit();
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('q');
@@ -24,6 +27,12 @@ export default function Root() {
     useEffect(() => {
         document.getElementById('q').value = q;
     }, [q]);
+
+    const selectNoteById = (noteId) => {
+        if (!noteId) return;
+        console.log(noteId);
+        navigate(`notes/${noteId}`)
+    }
 
     return (
         <>
@@ -53,7 +62,8 @@ export default function Root() {
                     </Form>
                 </div>
                 <nav>
-                    {notes.length ? (
+                    <FolderTree selectNoteById={selectNoteById}/>
+                    {/* {notes.length ? (
                         <ul>
                             {notes.map((note) => (
                                 <li key={note.id}>
@@ -71,7 +81,7 @@ export default function Root() {
                         <p>
                             <i>No notes</i>
                         </p>
-                    )}
+                    )} */}
                 </nav>
             </div>
             <div id="detail" className={

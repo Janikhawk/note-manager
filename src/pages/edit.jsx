@@ -1,31 +1,34 @@
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import { createNote, updateNote } from "../note-service";
+import { updateNote } from "../services/note-service";
 
-export async function createAction({ request, params }) {
+export async function editAction({ request, params }) {
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
-    const note = await createNote();
-    await updateNote(note.id, updates);
-    return redirect(`/notes/${note.id}`);
+    await updateNote(params.noteId, updates);
+    return redirect(`/notes/${params.noteId}`);
 }
 
-export default function CreateNote() {
-    const note = {
-        title: null,
-        description: null
-    };
+export default function EditNote() {
+    const note = useLoaderData();
     const navigate = useNavigate();
 
     return (
         <Form method="post" id="note-form">
             {/* <p>
-                <span>Title</span>
+                <span>Name</span>
                 <input
-                    placeholder="Title"
-                    aria-label="Title"
+                    placeholder="First"
+                    aria-label="First name"
                     type="text"
-                    name="title"
-                    defaultValue={note.title}
+                    name="first"
+                    defaultValue={note.first}
+                />
+                <input
+                    placeholder="Last"
+                    aria-label="Last name"
+                    type="text"
+                    name="last"
+                    defaultValue={note.last}
                 />
             </p> */}
             <label>

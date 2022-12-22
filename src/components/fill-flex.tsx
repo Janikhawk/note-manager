@@ -19,7 +19,6 @@ export const FillFlexParent = React.forwardRef(function FillFlexParent(
   forwardRef
 ) {
   const { ref, width, height } = useResizeObserver();
-  console.log(ref, width, height);
   return (
     <div style={style} ref={mergeRefs(ref, forwardRef)}>
       {width && height ? props.children({ width, height }) : null}
