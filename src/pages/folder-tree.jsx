@@ -4,18 +4,28 @@ import '../styles/tree-styles.css';
 import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
 import * as faIcons from "react-icons/fa";
-import { useLocation, useNavigation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 
-export default function FolderTree({selectNoteById, folderData}) {
+export default function FolderTree({selectedNoteId, selectNoteById, folderData}) {
   const [term, setTerm] = useState("");
-  let {noteId} = useParams();
   const treeRef = useRef();
 
-  useEffect(() => {
-    const tree = treeRef.current;
-    tree && tree.select(noteId);
-  }, [])
+  const [selectedMap, setSelectedMap] = useState({});
+
+  const handleNodeClick = (node) => {
+    node.isInternal && node.toggle();
+    if (node.isSelected && selectedMap[node.data.id]) {
+      node.deselect();
+      const newMapCopy = {...selectedMap};
+      delete newMapCopy[node.data.id];
+      setSelectedMap(newMapCopy);
+      selectNoteById(null);
+    } else {
+      setSelectedMap({...selectedMap, [node.data.id]: true});
+      selectNoteById(node.data.id)
+    }
+  };
 
   return (
     <Tree
@@ -26,16 +36,15 @@ export default function FolderTree({selectNoteById, folderData}) {
       renderCursor={Cursor}
       searchTerm={term}
       paddingBottom={32}
-      onSelect={(nodes) => {
-        selectNoteById(nodes[0]?.id);
-      }}
+      selection = {selectedNoteId}
     >
-      {Node}
+      {(event) => Node({...event, handleNodeClick})}
     </Tree>
   );
 };
 
-function Node({ node, style, dragHandle }) {
+function Node(props) {
+  const { node, style, dragHandle, handleNodeClick} = props;
   const Icon = node.type === 'FILE' ? faIcons.FaRegFileAlt : node.isOpen ? faIcons.FaRegFolderOpen : faIcons.FaRegFolder || faIcons.FaRegFolder;
   return (
     <div
@@ -43,9 +52,8 @@ function Node({ node, style, dragHandle }) {
       style={style}
       className={clsx('node', node.state)}
       onClick={() => {
-        node.isInternal && node.toggle();
-      }
-      }
+        handleNodeClick(node);
+      }}
     >
       <FolderArrow node={node} />
       <span>

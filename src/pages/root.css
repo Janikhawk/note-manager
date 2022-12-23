@@ -1,0 +1,8 @@
+.parent-sidebar {
+    display: flex;
+}
+
+.sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+}

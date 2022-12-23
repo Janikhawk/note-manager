@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate, useParams } from "react-router-dom";
 import FolderTree from "./folder-tree";
 import { createNote, getNotes } from "../services/note-service";
+import './root.css';
 
 
 export async function rootLoader({request}) {
@@ -19,26 +20,39 @@ export async function rootAction({request, params}) {
 
 export default function Root() {
     const {notes, searchInput} = useLoaderData();
-    console.log(notes);
     const navigation = useNavigation();
     const navigate = useNavigate();
     const submit = useSubmit();
     const [data, setData] = useState({notes, searchInput});
+    let {noteId} = useParams();
+    const [selectedNote, setSelectedNote] = useState(noteId ? noteId : null);
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
-    useEffect(() => {
-        document.getElementById('searchInput').value = searchInput;
-        //setData({notes, searchInput})
-    }, [searchInput]);
+    // useEffect(() => {
+    //     document.getElementById('searchInput').value = searchInput;
+    //     //setData({notes, searchInput})
+    // }, [searchInput]);
 
     const selectNoteById = (noteId) => {
-        if (!noteId) return;
-        navigate(`notes/${noteId}`)
+        setSelectedNote(noteId);
+        if (noteId) {
+            navigate(`notes/${noteId}`);
+        } else {
+            navigate('/');
+        }
     }
 
     return (
         <>
+        <div className="parent-sidebar">
+            <div className="sidebar-buttons">
+                <Form method="post">
+                    <button type="submit">Add</button>
+                </Form>
+                <button type="button">Edit</button>
+                <button type="button">Remove</button>
+            </div>
             <div id='sidebar'>
                 <div>
                     <Form id='search-form' role='search'>
@@ -60,39 +74,19 @@ export default function Root() {
                         <div id='search-spinner' aria-hidden hidden={!searching}/>
                         <div className='sr-only' aria-live="polite"/>
                     </Form>
-                    <Form method="post">
-                        <button type="submit">New</button>
-                    </Form>
                 </div>
                 <nav>
-                    {console.log(notes)}
-                    <FolderTree folderData={notes} selectNoteById={selectNoteById}/>
-                    {/* {notes.length ? (
-                        <ul>
-                            {notes.map((note) => (
-                                <li key={note.id}>
-                                    <NavLink 
-                                        to={`notes/${note.id}`}
-                                        className={({isActive, isPending}) => isActive ? 'active' : isPending ? 'pending' : ''}
-                                    >
-                                        {note.title ? (<>{note.title}</>) : (<i>No title</i>)}{" "}
-                                        {note.favorite && <span>★</span>}
-                                    </NavLink>
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>
-                            <i>No notes</i>
-                        </p>
-                    )} */}
+                    <FolderTree
+                        folderData={notes}
+                        selectNoteById={selectNoteById}
+                        selectedNoteId={selectedNote}
+                        />
                 </nav>
             </div>
-            <div id="detail" className={
-                navigation.state === "loading" ? "loading" : ""
-            }>
-                <Outlet />
-            </div>
+        </div>
+        <div id="detail" className={navigation.state === "loading" ? "loading" : ""}>
+            <Outlet />
+        </div>
         </>
     )
 }

@@ -2,7 +2,6 @@ import { useLoaderData, Form, useFetcher } from "react-router-dom";
 import { getNote, updateNote } from "../services/note-service";
 
 export async function noteLoader({params}) {
-    console.log(params);
     return getNote(params.noteId);
 }
 
