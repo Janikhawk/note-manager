@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate, useParams } from "react-router-dom";
 import FolderTree from "./folder-tree";
-import { createNote, getNotes } from "../services/note-service";
+import { createNote, getDirectories } from "../services/note-service";
 import './root.css';
+import { useSelector } from "react-redux";
 
 
 export async function rootLoader({request}) {
     const url = new URL(request.url);
     const searchInput = url.searchParams.get('searchInput');
-    const notes = await getNotes(searchInput);
+    const notes = await getDirectories(searchInput);
     return {notes, searchInput};
 }
 
@@ -26,6 +27,9 @@ export default function Root() {
     const [data, setData] = useState({notes, searchInput});
     let {noteId} = useParams();
     const [selectedNote, setSelectedNote] = useState(noteId ? noteId : null);
+
+    const someState = useSelector((state) => state);
+    console.log('store', someState);
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 

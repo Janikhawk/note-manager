@@ -14,13 +14,12 @@ export async function noteAction({request, params}) {
 
 export default function Note() {
     const note = useLoaderData();
-
     return (
     <div id="note"> {note ? (<div>
         <h1>
-            {note.title ? (
+            {note.name ? (
                 <>
-                    {note.title}
+                    {note.name}
                 </>
             ) : (
                 <i>No title</i>

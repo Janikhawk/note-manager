@@ -3,21 +3,45 @@ import localforage from "localforage";
 import { matchSorter } from "match-sorter";
 import sortBy from "sort-by";
 
-export async function getNotes(query) {
-    await fakeNetwork(`getNotes:${query}`);
-    let notes = await localforage.getItem("notes");
+const noteList = [];
+const noteMap = {};
+
+export async function getDirectories(query) {
+    let notes = await fetchDirectories();
     if (!notes) notes = [];
-    if (query) {
-        notes = matchSorter(notes, query, { keys: ["first", "last"] });
+    console.log(notes);
+    const asd = normalizeList(notes);
+    console.log(asd);
+    return asd;
+}
+
+function normalizeList(list) {
+    return list = list.reduce((acc, curr) => {
+        if (!curr.parentId) {
+            acc.push(curr)
+        } else {
+            const parent = acc.find(note => note.id === curr.parentId);
+            if (!parent) return acc;
+            parent.children ? parent.children.push(curr) : parent.children = [curr];
+        }
+        return acc;
+    }, [])
+}
+
+export async function fetchDirectories() {
+    try {
+        const response = await fetch('http://localhost:4200/directories');
+        return await response.json();
+    } catch (err) {
+        console.log(err);
     }
-    return notes.sort(sortBy("last", "createdAt"));
 }
 
 export async function createNote({parentId, ...updates}) {
     await fakeNetwork();
     let id = Math.random().toString(36).substring(2, 9);
     let note = { id, createdAt: Date.now(), ...updates };
-    let notes = await getNotes();
+    let notes = await getDirectories();
     if (parentId) {
         const parentNote = notes.find(note => note.id === parentId);
         parentNote && parentNote.children ? parentNote.children.push(note) : parentNote.children = [note];

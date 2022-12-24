@@ -47,7 +47,7 @@ function Node(props) {
   const { node, style, dragHandle, handleNodeClick} = props;
   const Icon = node.type === 'FILE' ? faIcons.FaRegFileAlt : node.isOpen ? faIcons.FaRegFolderOpen : faIcons.FaRegFolder || faIcons.FaRegFolder;
   return (
-    <div
+    <>{!node.data.parentId ? (<div
       ref={dragHandle}
       style={style}
       className={clsx('node', node.state)}
@@ -55,12 +55,12 @@ function Node(props) {
         handleNodeClick(node);
       }}
     >
-      <FolderArrow node={node} />
+      <FolderArrow node={node}/>
       <span>
         <Icon />
       </span>
-      <span>{node.isEditing ? <Input node={node} /> : node.data.title}</span>
-    </div>
+      <span>{node.isEditing ? <Input node={node} /> : node.data.name}</span>
+    </div>) : (<></>)}</>
   );
 }
 
