@@ -1,20 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import ErrorPage from './pages/error-page';
-import Root, { rootAction,  rootLoader } from './pages/root';
-import Note, { noteAction, noteLoader } from './pages/note';
+import Root, {rootAction, rootLoader} from './pages/root';
 import DefaultIndex from './pages/default-index';
-import EditNote, { editAction } from './pages/edit';
-import { destroyAction } from './pages/destroy';
-import CreateNote, { createAction } from './pages/create';
-import FolderTree from './pages/folder-tree';
+import EditNote, {editAction} from './pages/edit';
+import {destroyAction} from './pages/destroy';
+import CreateNote, {createAction} from './pages/create';
 import store from './store/store';
-import { Provider } from 'react-redux/es/exports';
+import {Provider} from 'react-redux/es/exports';
+import NoteList, {folderAction, folderLoader} from "./components/notice/NoteList";
 
 const router = createBrowserRouter([
   {
@@ -29,19 +25,19 @@ const router = createBrowserRouter([
         children: [
           { index: true, element: <DefaultIndex/>},
           {
-            path: 'notes/:noteId',
-            element: <Note/>,
-            loader: noteLoader,
-            action: noteAction
+            path: 'directory/:folderId',
+            element: <NoteList/>,
+            loader: folderLoader,
+            action: folderAction
           },
           {
-            path: 'notes/new',
+            path: 'directory/new',
             element: <CreateNote/>,
             action: createAction,
             loader: rootLoader,
           },
           {
-            path: 'notes/:noteId/new',
+            path: 'directory/:folderId/new',
             element: <CreateNote/>,
             action: createAction,
             loader: rootLoader,
@@ -49,7 +45,7 @@ const router = createBrowserRouter([
           {
             path: "notes/:noteId/edit",
             element: <EditNote />,
-            loader: noteLoader,
+            //loader: noteLoader,
             action: editAction,
         },
         {

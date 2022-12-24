@@ -1,35 +1,46 @@
-import { useEffect, useState } from "react";
-import { NavLink, Outlet, Form, redirect, useLoaderData, useNavigation, useSubmit, useNavigate, useParams } from "react-router-dom";
-import FolderTree from "./folder-tree";
-import { createNote, getDirectories } from "../services/note-service";
+import {useState} from "react";
+import {
+    Form,
+    Outlet,
+    redirect,
+    useLoaderData,
+    useNavigate,
+    useNavigation,
+    useParams,
+    useSubmit
+} from "react-router-dom";
+import {getDirectories} from "../services/note-service";
 import './root.css';
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
+import Folder from "../components/directory/Folder";
+import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
+import Button from "../components/Button/button";
 
 
 export async function rootLoader({request}) {
     const url = new URL(request.url);
     const searchInput = url.searchParams.get('searchInput');
-    const notes = await getDirectories(searchInput);
-    return {notes, searchInput};
+    const directories = await getDirectories(searchInput);
+    return {directories, searchInput};
 }
 
 export async function rootAction({request, params}) {
     const urlArr = window.location.pathname.split('/');
     const parentNoteId = urlArr[urlArr.length - 1];
-    return redirect(`/notes/${parentNoteId}/new`)
+    return redirect(`/directory/${parentNoteId}/new`)
 }
 
 export default function Root() {
-    const {notes, searchInput} = useLoaderData();
+    const {directories, searchInput} = useLoaderData();
     const navigation = useNavigation();
     const navigate = useNavigate();
     const submit = useSubmit();
-    const [data, setData] = useState({notes, searchInput});
+    const [data, setData] = useState({directories, searchInput});
     let {noteId} = useParams();
     const [selectedNote, setSelectedNote] = useState(noteId ? noteId : null);
 
     const someState = useSelector((state) => state);
-    console.log('store', someState);
+    //console.log('store', someState);
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
@@ -38,11 +49,12 @@ export default function Root() {
     //     //setData({notes, searchInput})
     // }, [searchInput]);
 
-    const selectNoteById = (noteId) => {
-        setSelectedNote(noteId);
-        if (noteId) {
-            navigate(`notes/${noteId}`);
+    const selectNoteById = (folderId) => {
+        if (selectedNote != folderId) {
+            setSelectedNote(folderId);
+            navigate(`directory/${folderId}`);
         } else {
+            setSelectedNote(null);
             navigate('/');
         }
     }
@@ -52,10 +64,10 @@ export default function Root() {
         <div className="parent-sidebar">
             <div className="sidebar-buttons">
                 <Form method="post">
-                    <button type="submit">Add</button>
+                    <Button className='sidebar-button' icon={MdAddCircleOutline} type='submit'/>
                 </Form>
-                <button type="button">Edit</button>
-                <button type="button">Remove</button>
+                <Button className='sidebar-button' icon={MdMode}/>
+                <Button className='sidebar-button' icon={MdOutlineDeleteForever}/>
             </div>
             <div id='sidebar'>
                 <div>
@@ -80,11 +92,7 @@ export default function Root() {
                     </Form>
                 </div>
                 <nav>
-                    <FolderTree
-                        folderData={notes}
-                        selectNoteById={selectNoteById}
-                        selectedNoteId={selectedNote}
-                        />
+                    <Folder folderList={directories} selectFolder={selectNoteById}/>
                 </nav>
             </div>
         </div>

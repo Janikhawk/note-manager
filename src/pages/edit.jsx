@@ -1,12 +1,11 @@
 import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
-import { updateNote } from "../services/note-service";
 
 export async function editAction({ request, params }) {
     console.log(request);
     console.log(params);
     const formData = await request.formData();
     const updates = Object.fromEntries(formData);
-    await updateNote(params.noteId, updates);
+    //await updateNote(params.noteId, updates);
     return redirect(`/notes/${params.noteId}`);
 }
 
