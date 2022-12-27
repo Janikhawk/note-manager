@@ -1,6 +1,7 @@
 .directory-row {
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
 .left-space {
@@ -24,4 +25,10 @@
 .directory-row span:nth-child(3) {
     padding-left: 5px;
     padding-bottom: 4px;
+}
+
+.selected {
+    background-color: #b8ddff;
+    border-radius: 4px;
+    font-weight: bold;
 }

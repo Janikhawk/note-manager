@@ -16,18 +16,17 @@ const initialState = directoryAdapter.getInitialState({
     data: [],
     isLoading: false,
     error: null,
+    selectedFolder: null
 });
 
 export const directorySlice = createSlice({
     name: 'directories',
     initialState,
     reducers: {
-      toggleFolder: (state, action) => {
-          console.log(action.payload);
-          const item = state.data.find(item => item.id === action.payload);
-          if (item) item.isOpen = !item.isOpen;
-          //state.data.push({name: 'birdeme', id: 27 });
-      }
+        toggleFolder: (state, action) => {
+            state.selectedFolder = state.selectedFolder != action.payload ? action.payload : null;
+            state.entities[action.payload].isOpen = !state.entities[action.payload].isOpen;
+          },
     },
     extraReducers: (builder) => {
         builder
@@ -61,10 +60,19 @@ export const {toggleFolder} = directorySlice.actions;
 
 export default directorySlice.reducer;
 
-export const {selectAll: selectAllDirectories, selectById: selectDirectoryById } = directoryAdapter.getSelectors((state) => state.directories);
+export const {selectAll: selectAllDirectories, selectById: selectDirectoryById, selectEntities: entities } = directoryAdapter.getSelectors((state) => state.directories);
 
 function getChildren(list) {
-    return list.map(listItem => ({...listItem, children: list.filter(innerListItem => innerListItem.parentId && innerListItem.parentId === listItem.id).map(innerListItem => innerListItem.id)}));
+    return list.map(listItem =>
+        ({
+            ...listItem,
+            isOpen: false,
+            children: list.filter(innerListItem => innerListItem.parentId && innerListItem.parentId == listItem.id).map(innerListItem => innerListItem.id)
+        }));
+}
+
+export function selectRootLevel(list) {
+    return list.filter(item => item.parentId == 1).map(item => item.id);
 }
 
 function normalizeList(list) {

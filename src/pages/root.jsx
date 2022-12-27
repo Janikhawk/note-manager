@@ -5,7 +5,7 @@ import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
-import {getDirectoriesAsync, selectAllDirectories, toggleFolder} from "../store/reducers/directory-slice";
+import {getDirectoriesAsync, selectAllDirectories, selectRootLevel} from "../store/reducers/directory-slice";
 
 
 // export async function rootLoader({request}) {
@@ -26,31 +26,24 @@ export default function Root() {
     const navigation = useNavigation();
     const navigate = useNavigate();
     const submit = useSubmit();
-    const {folderId} = useParams();
-
-    const [selectedNote, setSelectedNote] = useState(folderId ? folderId : null);
 
     const dispatch = useDispatch();
-    const directories = useSelector((state) => state.directories.data);
     const modifiedDirectories = useSelector(selectAllDirectories);
-    console.log(modifiedDirectories)
-
+    const selectedFolder = useSelector(state => state.directories.selectedFolder);
 
     useEffect(() => {
         dispatch(getDirectoriesAsync());
     }, [dispatch])
 
-    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
-
-    const selectNoteById = (folderId) => {
-        if (selectedNote !== folderId) {
-            setSelectedNote(folderId);
-            navigate(`directory/${folderId}`);
+    useEffect(() => {
+        if (!!selectedFolder) {
+            navigate(`directory/${selectedFolder}`);
         } else {
-            setSelectedNote(null);
             navigate('/');
         }
-    }
+    }, [selectedFolder])
+
+    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
     const handleEditClick = () => {
         console.log('EDIT');
@@ -89,7 +82,9 @@ export default function Root() {
                     </Form>
                 </div>
                 <nav>
-                    <Folder folderList={directories} selectFolder={selectNoteById}/>
+                    <Folder
+                        idList={selectRootLevel(modifiedDirectories)}
+                    />
                 </nav>
             </div>
         </div>
