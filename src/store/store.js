@@ -1,5 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit'
-import folderReducer from './reducers/folder-reducer';
+import {configureStore} from '@reduxjs/toolkit'
+import {directorySlice} from "./reducers/directory-slice";
 
-const store = configureStore({reducer: folderReducer});
-export default store;
+export const store = configureStore({
+    reducer: {
+        [directorySlice.name]: directorySlice.reducer,
+    },
+    // middleware: (getDefaultMiddleware) =>
+    //     getDefaultMiddleware().concat(directoryApi.middleware),
+})

@@ -1,28 +1,19 @@
-import {useState} from "react";
-import {
-    Form,
-    Outlet,
-    redirect,
-    useLoaderData,
-    useNavigate,
-    useNavigation,
-    useParams,
-    useSubmit
-} from "react-router-dom";
-import {getDirectories} from "../services/note-service";
+import {useEffect, useState} from "react";
+import {Form, Outlet, redirect, useNavigate, useNavigation, useParams, useSubmit} from "react-router-dom";
 import './root.css';
-import {useSelector} from "react-redux";
 import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
+import {useDispatch, useSelector} from "react-redux";
+import {getDirectoriesAsync, toggleFolder} from "../store/reducers/directory-slice";
 
 
-export async function rootLoader({request}) {
-    const url = new URL(request.url);
-    const searchInput = url.searchParams.get('searchInput');
-    const directories = await getDirectories(searchInput);
-    return {directories, searchInput};
-}
+// export async function rootLoader({request}) {
+//     const url = new URL(request.url);
+//     const searchInput = url.searchParams.get('searchInput');
+//     const directories = await getDirectories(searchInput);
+//     return {data: directories, searchInput};
+// }
 
 export async function rootAction({request, params}) {
     const urlArr = window.location.pathname.split('/');
@@ -31,32 +22,35 @@ export async function rootAction({request, params}) {
 }
 
 export default function Root() {
-    const {directories, searchInput} = useLoaderData();
+    const searchInput = '';
     const navigation = useNavigation();
     const navigate = useNavigate();
     const submit = useSubmit();
-    const [data, setData] = useState({directories, searchInput});
-    let {noteId} = useParams();
-    const [selectedNote, setSelectedNote] = useState(noteId ? noteId : null);
+    const {folderId} = useParams();
 
-    const someState = useSelector((state) => state);
-    //console.log('store', someState);
+    const [selectedNote, setSelectedNote] = useState(folderId ? folderId : null);
+
+    const dispatch = useDispatch();
+    const directories = useSelector((state) => state.directories.data);
+
+    useEffect(() => {
+        dispatch(getDirectoriesAsync());
+    }, [dispatch])
 
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
-    // useEffect(() => {
-    //     document.getElementById('searchInput').value = searchInput;
-    //     //setData({notes, searchInput})
-    // }, [searchInput]);
-
     const selectNoteById = (folderId) => {
-        if (selectedNote != folderId) {
+        if (selectedNote !== folderId) {
             setSelectedNote(folderId);
             navigate(`directory/${folderId}`);
         } else {
             setSelectedNote(null);
             navigate('/');
         }
+    }
+
+    const handleEditClick = () => {
+        console.log('EDIT');
     }
 
     return (
@@ -66,8 +60,8 @@ export default function Root() {
                 <Form method="post">
                     <Button className='sidebar-button' icon={MdAddCircleOutline} type='submit'/>
                 </Form>
-                <Button className='sidebar-button' icon={MdMode}/>
-                <Button className='sidebar-button' icon={MdOutlineDeleteForever}/>
+                <Button className='sidebar-button' icon={MdMode} type='button' onClick={() => handleEditClick()}/>
+                <Button className='sidebar-button' icon={MdOutlineDeleteForever} type='button' onClick={() => handleEditClick()}/>
             </div>
             <div id='sidebar'>
                 <div>

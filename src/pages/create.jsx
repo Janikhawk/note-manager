@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Form, redirect, useNavigate, useParams} from "react-router-dom";
+import {Form, redirect, useNavigate} from "react-router-dom";
 import {createDirectory, createNote} from "../services/note-service";
 
 export async function createAction({ request, params }) {

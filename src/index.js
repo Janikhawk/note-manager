@@ -3,21 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import ErrorPage from './pages/error-page';
-import Root, {rootAction, rootLoader} from './pages/root';
+import Root, {rootAction} from './pages/root';
 import DefaultIndex from './pages/default-index';
 import EditNote, {editAction} from './pages/edit';
 import {destroyAction} from './pages/destroy';
 import CreateNote, {createAction} from './pages/create';
-import store from './store/store';
 import {Provider} from 'react-redux/es/exports';
 import NoteList, {folderAction, folderLoader} from "./components/notice/NoteList";
+import {store} from "./store/store";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root/>,
     errorElement: <ErrorPage />,
-    loader: rootLoader,
+    //loader: rootLoader,
     action: rootAction,
     children: [
       {
@@ -34,13 +34,13 @@ const router = createBrowserRouter([
             path: 'directory/new',
             element: <CreateNote/>,
             action: createAction,
-            loader: rootLoader,
+            //loader: rootLoader,
           },
           {
             path: 'directory/:folderId/new',
             element: <CreateNote/>,
             action: createAction,
-            loader: rootLoader,
+            //loader: rootLoader,
           },
           {
             path: "notes/:noteId/edit",
