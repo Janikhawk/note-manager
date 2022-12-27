@@ -1,35 +1,33 @@
 import * as icons from "react-icons/md";
 import * as faIcons from "react-icons/fa";
-import './Folder.css';
+import './Directory.css';
 import {useDispatch, useSelector} from "react-redux";
-import {entities, toggleFolder} from "../../store/directory-slice";
+import {entities, toggleDirectory} from "../../store/directory-slice";
 
-const Folder = ({idList}) => {
+export const Directory = ({idList}) => {
     const directoriesMap = useSelector(entities);
-    const selectedFolder = useSelector(state => state.directories.selectedFolder);
+    const selectedDirectory = useSelector(state => state.directories.selectedDirectory);
 
     const dispatch = useDispatch();
 
     return (idList.map((id) => (
         <div key={directoriesMap[id].id}>
             <div
-                className={`directory-row ${directoriesMap[id].id === selectedFolder ? 'selected' : ''}` }
-                onClick={() => dispatch(toggleFolder(directoriesMap[id].id))}
+                className={`directory-row ${directoriesMap[id].id === selectedDirectory ? 'selected' : ''}` }
+                onClick={() => dispatch(toggleDirectory(directoriesMap[id].id))}
             >
-                <FolderArrow node={directoriesMap[id]}/>
+                <DirectoryArrow node={directoriesMap[id]}/>
                 <span>{directoriesMap[id].isOpen ? <faIcons.FaRegFolderOpen/> : <faIcons.FaRegFolder/>}</span>
                 <span>{directoriesMap[id].name}</span>
             </div>
             <div style={{display: directoriesMap[id].isOpen ? 'block' : 'none', paddingLeft: 20}}>
-                {directoriesMap[id].children && <Folder idList={directoriesMap[id].children} directoriesMap={directoriesMap} />}
+                {directoriesMap[id].children && <Directory idList={directoriesMap[id].children} directoriesMap={directoriesMap} />}
             </div>
         </div>
     )));
 };
 
-export default Folder;
-
-function FolderArrow({ node }) {
+function DirectoryArrow({ node }) {
     if (!node.children?.length) return <span className='left-space'></span>;
     return (
         <span>

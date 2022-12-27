@@ -1,7 +1,7 @@
 import {useEffect} from "react";
 import {Form, Outlet, redirect, useNavigate, useNavigation} from "react-router-dom";
 import './root.css';
-import Folder from "../components/directory/Folder";
+import {Directory} from "../components/directory/Directory";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
@@ -26,29 +26,29 @@ export default function Root() {
 
     const dispatch = useDispatch();
     const directoriesRootIds = useSelector(selectRootLevel());
-    const selectedFolder = useSelector(state => state.directories.selectedFolder);
+    const selectedDirectory = useSelector(state => state.directories.selectedDirectory);
 
     useEffect(() => {
         dispatch(getDirectoriesAsync());
     }, [dispatch])
 
     useEffect(() => {
-        if (!!selectedFolder) {
-            navigate(`directory/${selectedFolder}`);
+        if (!!selectedDirectory) {
+            navigate(`directory/${selectedDirectory}`);
         } else {
             navigate('/');
         }
-    }, [selectedFolder])
+    }, [selectedDirectory])
 
 
     const handleEditClick = () => {
-        navigate(`directory/${selectedFolder}/edit`);
+        navigate(`directory/${selectedDirectory}/edit`);
     }
 
     const handleDeleteClick = () => {
-        let text = "Are you sure to delete selected folder?\nAll notices inside of that folder will also be deleted.";
+        let text = "Are you sure to delete selected directory?\nAll notices inside of that directory will also be deleted.";
         if (window.confirm(text) == true) {
-            dispatch(deleteDirectoryAsync(selectedFolder))
+            dispatch(deleteDirectoryAsync(selectedDirectory))
         }
     }
 
@@ -76,7 +76,7 @@ export default function Root() {
                     </div>
                     <div id='sidebar'>
                         <nav>
-                            <Folder
+                            <Directory
                                 idList={directoriesRootIds}
                             />
                         </nav>

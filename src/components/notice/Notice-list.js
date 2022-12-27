@@ -21,8 +21,6 @@ export const NoticeList = () => {
 
     const noticeList = useSelector(selectByDirectoryId(directoryId));
 
-
-
     return (
         <>
 
@@ -35,7 +33,7 @@ export const NoticeList = () => {
                     </div>
 
                 ) :
-                (<i>No notices in current folder</i>)
+                (<i>No notices in current directory</i>)
             }
         </>
     )

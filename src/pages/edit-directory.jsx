@@ -5,19 +5,19 @@ import {selectDirectoryById, updateDirectoryAsync} from "../store/directory-slic
 export default function EditDirectory() {
     const navigate = useNavigate();
     const {directoryId} = useParams();
-    const selectedFolder = useSelector(state => selectDirectoryById(state, directoryId));
-    const folderData = {...selectedFolder};
+    const selectedDirectory = useSelector(state => selectDirectoryById(state, directoryId));
+    const directoryData = {...selectedDirectory};
 
     const dispatch = useDispatch();
 
     const changeName = (event) => {
-        folderData.name = event.target.value;
+        directoryData.name = event.target.value;
     }
 
     const updateDirectory = async (event) => {
         try {
             event.preventDefault();
-            dispatch(updateDirectoryAsync(folderData));
+            dispatch(updateDirectoryAsync(directoryData));
             navigate(-1);
         } catch(err) {
             console.log(err)
@@ -33,7 +33,7 @@ export default function EditDirectory() {
                     type="text"
                     name="name"
                     placeholder="Name"
-                    defaultValue={folderData.name}
+                    defaultValue={directoryData.name}
                     onChange = {changeName}
                 />
             </label>

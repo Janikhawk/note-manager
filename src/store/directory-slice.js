@@ -28,7 +28,7 @@ export const deleteDirectoryAsync = createAsyncThunk(`${directoryStateName}/dele
 const initialState = directoryAdapter.getInitialState({
     isLoading: false,
     error: null,
-    selectedFolder: null,
+    selectedDirectory: null,
     data: [],
 });
 
@@ -36,8 +36,8 @@ export const directorySlice = createSlice({
     name: 'directories',
     initialState,
     reducers: {
-        toggleFolder: (state, action) => {
-            state.selectedFolder = state.selectedFolder != action.payload ? action.payload : null;
+        toggleDirectory: (state, action) => {
+            state.selectedDirectory = state.selectedDirectory != action.payload ? action.payload : null;
             state.entities[action.payload].isOpen = !state.entities[action.payload].isOpen;
           },
     },
@@ -82,7 +82,7 @@ export const directorySlice = createSlice({
     }
 });
 
-export const {toggleFolder} = directorySlice.actions;
+export const {toggleDirectory} = directorySlice.actions;
 
 export default directorySlice.reducer;
 

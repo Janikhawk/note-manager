@@ -48,6 +48,7 @@ export const noticeSlice = createSlice({
             })
             .addCase(createNoticeAsync.fulfilled, (state, {payload: notice}) => {
                 noticesAdapter.addOne(state, notice)
+                state.data = [...state.data, notice];
             })
             .addCase(updateNoticeAsync.fulfilled, (state, {payload: notice}) => {
                 noticesAdapter.updateOne(state, {

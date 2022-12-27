@@ -8,12 +8,12 @@ import {createNoticeAsync} from "../store/notice-slice";
 export default function CreateNote() {
     const {directoryId = 1} = useParams();
     const noteInitialValue = {title: null, description: null, directoryId: directoryId};
-    const folderInitialValue = {parentId: directoryId, name: null};
+    const directoryInitialValue = {parentId: directoryId, name: null};
 
     const [data, setData] = useState({
         dataType: 'FILE',
         note: noteInitialValue,
-        folder: folderInitialValue
+        directory: directoryInitialValue
     });
 
     const dispatch = useDispatch();
@@ -26,7 +26,7 @@ export default function CreateNote() {
                 dispatch(createNoticeAsync(data.note));
 
             } else {
-                dispatch(createDirectoryAsync(data.folder));
+                dispatch(createDirectoryAsync(data.directory));
             }
             navigate(-1);
         } catch(err) {
@@ -39,8 +39,8 @@ export default function CreateNote() {
             <label>
                 <>
                     <span>Type</span>
-                    <input type="radio" name="type" value='FILE' onChange={(event) => setData({...data, folder: folderInitialValue, dataType: event.target.value})}/> File
-                    <input type="radio" name="type" value='FOLDER' onChange={(event) => setData({...data, note: noteInitialValue, dataType: event.target.value})}/> Folder
+                    <input type="radio" name="type" value='FILE' onChange={(event) => setData({...data, directory: directoryInitialValue, dataType: event.target.value})}/> File
+                    <input type="radio" name="type" value='DIRECTORY' onChange={(event) => setData({...data, note: noteInitialValue, dataType: event.target.value})}/> Folder
                 </>
             </label>
             {data.dataType === 'FILE' ? (
@@ -74,8 +74,8 @@ export default function CreateNote() {
                         type="text"
                         name="name"
                         placeholder="Name"
-                        defaultValue={data.folder.name}
-                        onChange={(event) => setData({ ...data, folder: {...data.folder, name: event.target.value}})}
+                        defaultValue={data.directory.name}
+                        onChange={(event) => setData({ ...data, directory: {...data.directory, name: event.target.value}})}
                     />
                 </label>
             )}
