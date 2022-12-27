@@ -1,31 +1,32 @@
 import {useState} from "react";
-import {Form, redirect, useNavigate} from "react-router-dom";
-import {createDirectory, createNote} from "../services/note-service";
+import {useNavigate, useParams} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {createDirectoryAsync} from "../store/directory-slice";
 
-export async function createAction({ request, params }) {
-    const formData = await request.formData();
-    const updates = Object.fromEntries(formData);
-    const folderId = params.folderId ? params.folderId : 1;
-    updates.type === 'FILE' ?
-        await createNote({...updates, directoryId: folderId}) :
-        await createDirectory({...updates, parentId: folderId });
-    return redirect(`/folder/${params.folderId}`);
-}
-
-const noteInitialValue = {title: null, description: null, directoryId: null};
-const folderInitialValue = {parentId: 1, name: null};
 
 export default function CreateNote() {
+    const {folderId = 1} = useParams();
+    const noteInitialValue = {title: null, description: null, directoryId: folderId};
+    const folderInitialValue = {parentId: folderId, name: null};
+
     const [data, setData] = useState({
         dataType: 'FILE',
         note: noteInitialValue,
         folder: folderInitialValue
-    })
+    });
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const createDirectory = (event) => {
+        event.preventDefault();
+        const finalData = data.dataType === 'FILE' ? data.note : data.folder;
+        console.log(finalData);
+        dispatch(createDirectoryAsync(finalData));
+    }
+
     return (
-        <Form method="post" id="note-form">
+        <form id="note-form" onSubmit={createDirectory}>
             <label>
                 <>
                     <span>Type</span>
@@ -75,6 +76,6 @@ export default function CreateNote() {
                     onClick={() => { navigate(-1);}}
                 >Cancel</button>
             </p>
-        </Form>
+        </form>
     );
 }

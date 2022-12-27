@@ -7,7 +7,7 @@ import Root, {rootAction} from './pages/root';
 import DefaultIndex from './pages/default-index';
 import EditNote, {editAction} from './pages/edit';
 import {destroyAction} from './pages/destroy';
-import CreateNote, {createAction} from './pages/create';
+import CreateNote from './pages/create';
 import {Provider} from 'react-redux/es/exports';
 import NoteList, {folderAction, folderLoader} from "./components/notice/NoteList";
 import {store} from "./store/store";
@@ -33,13 +33,13 @@ const router = createBrowserRouter([
           {
             path: 'directory/new',
             element: <CreateNote/>,
-            action: createAction,
+            //action: createAction,
             //loader: rootLoader,
           },
           {
             path: 'directory/:folderId/new',
             element: <CreateNote/>,
-            action: createAction,
+            //action: createAction,
             //loader: rootLoader,
           },
           {

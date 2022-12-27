@@ -1,5 +1,5 @@
 import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
-import {createDirectory, getDirectories} from "../../services/directory-api";
+import {createDirectory, getDirectories, updateDirectory} from "../services/directory-api";
 
 const directoryAdapter = createEntityAdapter();
 
@@ -9,11 +9,16 @@ export const getDirectoriesAsync = createAsyncThunk('directories/getDirectories'
 });
 
 export const createDirectoryAsync = createAsyncThunk('directories/createDirectory', async(directory) => {
-    return createDirectory(directory);
+    const response = await createDirectory(directory);
+    return response.data;
 });
 
+export const updateDirectoryAsync = createAsyncThunk('directories/updateDirectory', async(directory) => {
+    const response = await updateDirectory(directory);
+    return response.data;
+})
+
 const initialState = directoryAdapter.getInitialState({
-    data: [],
     isLoading: false,
     error: null,
     selectedFolder: null
@@ -45,9 +50,14 @@ export const directorySlice = createSlice({
             .addCase(createDirectoryAsync.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(createDirectoryAsync.fulfilled, (state, action) => {
+            .addCase(createDirectoryAsync.fulfilled, (state, {payload}) => {
                 state.isLoading = false;
-                state.data.push(action.payload);
+                const insertData = {...payload, isOpen: false, children: []};
+                directoryAdapter.updateOne(state, {
+                    id: insertData.parentId,
+                    changes: {...state.entities[insertData.parentId], children: [...state.entities[insertData.parentId].children, payload.id]}
+                })
+                directoryAdapter.addOne(state, insertData)
             })
             .addCase(createDirectoryAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -73,23 +83,4 @@ function getChildren(list) {
 
 export function selectRootLevel(list) {
     return list.filter(item => item.parentId == 1).map(item => item.id);
-}
-
-function normalizeList(list) {
-    const idMapping = list.reduce((acc, el, i) => {
-        acc[el.id] = i;
-        return acc;
-    }, {});
-    let root;
-    list.forEach((el) => {
-        el.isOpen = false;
-        if (!el.parentId) {
-            root = el;
-            return;
-        }
-        const parentEl = list[idMapping[el.parentId]];
-        parentEl.children ? parentEl.children.push(el) : parentEl.children = [el];
-    });
-
-    return root.children;
 }

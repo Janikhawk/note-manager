@@ -1,4 +1,4 @@
-import { Form, useLoaderData, redirect, useNavigate } from "react-router-dom";
+import {Form, useLoaderData, redirect, useNavigate, useParams} from "react-router-dom";
 
 export async function editAction({ request, params }) {
     console.log(request);
@@ -12,6 +12,8 @@ export async function editAction({ request, params }) {
 export default function EditNote() {
     const note = useLoaderData();
     const navigate = useNavigate();
+    const {folderId} = useParams();
+    console.log(folderId)
 
     return (
         <Form method="post" id="note-form">

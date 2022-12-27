@@ -2,7 +2,7 @@ import * as icons from "react-icons/md";
 import * as faIcons from "react-icons/fa";
 import './Folder.css';
 import {useDispatch, useSelector} from "react-redux";
-import {entities, toggleFolder} from "../../store/reducers/directory-slice";
+import {entities, toggleFolder} from "../../store/directory-slice";
 
 const Folder = ({idList}) => {
     const directoriesMap = useSelector(entities);

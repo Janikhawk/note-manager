@@ -5,7 +5,7 @@ import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
-import {getDirectoriesAsync, selectAllDirectories, selectRootLevel} from "../store/reducers/directory-slice";
+import {getDirectoriesAsync, selectAllDirectories, selectRootLevel} from "../store/directory-slice";
 
 
 // export async function rootLoader({request}) {
