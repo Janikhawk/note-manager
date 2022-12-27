@@ -1,5 +1,5 @@
 import {useEffect} from "react";
-import {Form, Outlet, redirect, useNavigate, useNavigation, useSubmit} from "react-router-dom";
+import {Form, Outlet, redirect, useNavigate, useNavigation} from "react-router-dom";
 import './root.css';
 import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
@@ -11,14 +11,8 @@ import {
     selectAllDirectories,
     selectRootLevel
 } from "../store/directory-slice";
+import {Input} from "../components/Input/input";
 
-
-// export async function rootLoader({request}) {
-//     const url = new URL(request.url);
-//     const searchInput = url.searchParams.get('searchInput');
-//     const directories = await getDirectories(searchInput);
-//     return {data: directories, searchInput};
-// }
 
 export async function rootAction({request, params}) {
     const urlArr = window.location.pathname.split('/');
@@ -27,13 +21,11 @@ export async function rootAction({request, params}) {
 }
 
 export default function Root() {
-    const searchInput = '';
     const navigation = useNavigation();
     const navigate = useNavigate();
-    const submit = useSubmit();
 
     const dispatch = useDispatch();
-    const modifiedDirectories = useSelector(selectAllDirectories);
+    const directoriesRootIds = useSelector(selectRootLevel());
     const selectedFolder = useSelector(state => state.directories.selectedFolder);
 
     useEffect(() => {
@@ -48,7 +40,6 @@ export default function Root() {
         }
     }, [selectedFolder])
 
-    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
     const handleEditClick = () => {
         navigate(`directory/${selectedFolder}/edit`);
@@ -61,48 +52,40 @@ export default function Root() {
         }
     }
 
+    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
+
     return (
         <>
-        <div className="parent-sidebar">
-            <div className="sidebar-buttons">
-                <Form method="post">
-                    <Button className='sidebar-button' icon={MdAddCircleOutline} type='submit'/>
-                </Form>
-                <Button className='sidebar-button' icon={MdMode} type='button' onClick={() => handleEditClick()}/>
-                <Button className='sidebar-button' icon={MdOutlineDeleteForever} type='button' onClick={() => handleDeleteClick()}/>
-            </div>
-            <div id='sidebar'>
-                <div>
-                    <Form id='search-form' role='search'>
-                        <input
-                            id='searchInput'
-                            className={[searching ? 'loading' : '', 'text-input'].join(' ')}
-                            aria-label='Search notes'
-                            placeholder='Search'
-                            type='search'
-                            name='searchInput'
-                            defaultValue={searchInput}
-                            onChange={(event) => {
-                                const isFirstSearch = searchInput === null;
-                                submit(event.currentTarget.form, {
-                                    replace: !isFirstSearch
-                                });
-                            }}
-                        />
-                        <div id='search-spinner' aria-hidden hidden={!searching}/>
+            <div>
+                <div className='search'>
+                    <form id='search-form' role='search'>
+                        <Input searching={searching}/>
+                        <div className='search-spinner' aria-hidden hidden={!searching}/>
                         <div className='sr-only' aria-live="polite"/>
-                    </Form>
+                    </form>
                 </div>
-                <nav>
-                    <Folder
-                        idList={selectRootLevel(modifiedDirectories)}
-                    />
-                </nav>
             </div>
-        </div>
-        <div id="detail" className={navigation.state === "loading" ? "loading" : ""}>
-            <Outlet />
-        </div>
+            <div className='root-body'>
+                <div className="parent-sidebar">
+                    <div className="sidebar-buttons">
+                        <Form method="post">
+                            <Button className='sidebar-button' icon={MdAddCircleOutline} type='submit'/>
+                        </Form>
+                        <Button className='sidebar-button' icon={MdMode} type='button' onClick={() => handleEditClick()}/>
+                        <Button className='sidebar-button' icon={MdOutlineDeleteForever} type='button' onClick={() => handleDeleteClick()}/>
+                    </div>
+                    <div id='sidebar'>
+                        <nav>
+                            <Folder
+                                idList={directoriesRootIds}
+                            />
+                        </nav>
+                    </div>
+                </div>
+                <div id="detail" className={navigation.state === "loading" ? "loading" : ""}>
+                    <Outlet />
+                </div>
+            </div>
         </>
     )
 }

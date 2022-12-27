@@ -11,7 +11,7 @@ import CreateNote from './pages/create';
 import {Provider} from 'react-redux/es/exports';
 import {store} from "./store/store";
 import EditNotice from "./pages/edit-notice";
-import {NoticeList} from "./components/notice/NoticeList";
+import {NoticeList} from "./components/notice/Notice-list";
 
 const router = createBrowserRouter([
   {

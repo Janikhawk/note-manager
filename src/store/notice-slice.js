@@ -25,16 +25,26 @@ export const deleteNoticeAsync = createAsyncThunk(`${noticesStateName}/deleteNot
     return directoryId;
 });
 
-const initialState = noticesAdapter.getInitialState();
+const initialState = noticesAdapter.getInitialState({
+    filterName: null,
+    data: []
+});
 
 export const noticeSlice = createSlice({
     name: noticesStateName,
     initialState,
-    reducers: {},
+    reducers: {
+        setFilter: (state, {payload: filterName}) => {
+            state.filterName = filterName;
+            const noticeList = Object.values(state.entities);
+            state.data = filterName ? noticeList.filter(item => item.title.includes(filterName)) : noticeList;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getNoticesAsync.fulfilled, (state, {payload: noticeList}) => {
-                noticesAdapter.setAll(state, noticeList)
+                noticesAdapter.setAll(state, noticeList);
+                state.data = noticeList;
             })
             .addCase(createNoticeAsync.fulfilled, (state, {payload: notice}) => {
                 noticesAdapter.addOne(state, notice)
@@ -51,9 +61,11 @@ export const noticeSlice = createSlice({
     }
 });
 
+export const {setFilter} = noticeSlice.actions;
+
 export const { selectAll: selectAllNotices, selectById: selectNoticeById } = noticesAdapter.getSelectors(state => state[noticesStateName]);
 
 const selectSelf = (state) => state
 export const selectByDirectoryId = (directoryId) => createSelector(selectSelf, (state) => {
-    return Object.values(state.notices.entities).filter(item => item.directoryId == directoryId)
+    return state.notices.data.filter(item => item.directoryId == directoryId)
 });

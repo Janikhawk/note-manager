@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
 import {createDirectory, deleteDirectory, getDirectories, updateDirectory} from "../services/directory-api";
 
 export const directoryStateName = 'directories';
@@ -28,7 +28,8 @@ export const deleteDirectoryAsync = createAsyncThunk(`${directoryStateName}/dele
 const initialState = directoryAdapter.getInitialState({
     isLoading: false,
     error: null,
-    selectedFolder: null
+    selectedFolder: null,
+    data: [],
 });
 
 export const directorySlice = createSlice({
@@ -96,6 +97,7 @@ function getChildren(list) {
         }));
 }
 
-export function selectRootLevel(list) {
-    return list.filter(item => item.parentId == 1).map(item => item.id);
-}
+const selectSelf = (state) => state
+export const selectRootLevel = () => createSelector(selectSelf, (state) => {
+    return Object.values(state.directories.entities).filter(item => item.parentId == 1).map(item => item.id);
+});
