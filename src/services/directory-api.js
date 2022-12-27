@@ -7,5 +7,5 @@ export const createDirectory = (directory) => {
 };
 
 export const updateDirectory = (directory) => {
-    return axios.put('http://localhost:4200/directories', {...directory});
+    return axios.put(`http://localhost:4200/directories/${directory.id}`, {...directory});
 }

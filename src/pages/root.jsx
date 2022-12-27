@@ -47,6 +47,7 @@ export default function Root() {
 
     const handleEditClick = () => {
         console.log('EDIT');
+        navigate(`directory/${selectedFolder}/edit`);
     }
 
     return (

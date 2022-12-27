@@ -5,7 +5,7 @@ import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import ErrorPage from './pages/error-page';
 import Root, {rootAction} from './pages/root';
 import DefaultIndex from './pages/default-index';
-import EditNote, {editAction} from './pages/edit';
+import EditFolder, {editAction} from './pages/edit';
 import {destroyAction} from './pages/destroy';
 import CreateNote from './pages/create';
 import {Provider} from 'react-redux/es/exports';
@@ -43,8 +43,8 @@ const router = createBrowserRouter([
             //loader: rootLoader,
           },
           {
-            path: "notes/:noteId/edit",
-            element: <EditNote />,
+            path: "directory/:folderId/edit",
+            element: <EditFolder />,
             //loader: noteLoader,
             action: editAction,
         },

@@ -63,6 +63,12 @@ export const directorySlice = createSlice({
                 state.isLoading = false;
                 state.error = action.payload;
             })
+            .addCase(updateDirectoryAsync.fulfilled, (state, {payload: directory}) => {
+                directoryAdapter.updateOne(state, {
+                    id: directory.id,
+                    changes: directory
+                })
+            })
     }
 });
 

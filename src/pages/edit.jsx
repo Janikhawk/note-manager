@@ -1,4 +1,7 @@
 import {Form, useLoaderData, redirect, useNavigate, useParams} from "react-router-dom";
+import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {selectDirectoryById, updateDirectoryAsync} from "../store/directory-slice";
 
 export async function editAction({ request, params }) {
     console.log(request);
@@ -9,31 +12,58 @@ export async function editAction({ request, params }) {
     return redirect(`/notes/${params.noteId}`);
 }
 
-export default function EditNote() {
-    const note = useLoaderData();
+export default function EditFolder() {
     const navigate = useNavigate();
     const {folderId} = useParams();
-    console.log(folderId)
+    const selectedFolder = useSelector(state => selectDirectoryById(state, folderId));
+    const folderData = {...selectedFolder};
+
+    const dispatch = useDispatch();
+
+    const changeName = (event) => {
+        folderData.name = event.target.value;
+    }
+
+    const updateDirectory = async (event) => {
+        try {
+            event.preventDefault();
+            dispatch(updateDirectoryAsync(folderData));
+            navigate(-1);
+        } catch(err) {
+            console.log(err)
+        }
+    }
 
     return (
-        <Form method="post" id="note-form">
+        <form id="note-form" onSubmit={(e) => updateDirectory(e)}>
             <label>
-                <span>Title</span>
+                <span>Name</span>
                 <input
+                    className="text-input"
                     type="text"
-                    name="title"
-                    placeholder="Title"
-                    defaultValue={note.title}
+                    name="name"
+                    placeholder="Name"
+                    defaultValue={folderData.name}
+                    onChange = {changeName}
                 />
             </label>
-            <label>
-                <span>Description</span>
-                <textarea
-                    name="description"
-                    defaultValue={note.description}
-                    rows={6}
-                />
-            </label>
+            {/*<label>*/}
+            {/*    <span>Title</span>*/}
+            {/*    <input*/}
+            {/*        type="text"*/}
+            {/*        name="title"*/}
+            {/*        placeholder="Title"*/}
+            {/*        defaultValue={note.title}*/}
+            {/*    />*/}
+            {/*</label>*/}
+            {/*<label>*/}
+            {/*    <span>Description</span>*/}
+            {/*    <textarea*/}
+            {/*        name="description"*/}
+            {/*        defaultValue={note.description}*/}
+            {/*        rows={6}*/}
+            {/*    />*/}
+            {/*</label>*/}
             <p>
                 <button type="submit">Save</button>
                 <button
@@ -41,6 +71,6 @@ export default function EditNote() {
                     onClick={() => { navigate(-1); }}
                 >Cancel</button>
             </p>
-        </Form>
+        </form>
     );
 }
