@@ -5,7 +5,7 @@ import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
-import {getDirectoriesAsync, toggleFolder} from "../store/reducers/directory-slice";
+import {getDirectoriesAsync, selectAllDirectories, toggleFolder} from "../store/reducers/directory-slice";
 
 
 // export async function rootLoader({request}) {
@@ -32,6 +32,9 @@ export default function Root() {
 
     const dispatch = useDispatch();
     const directories = useSelector((state) => state.directories.data);
+    const modifiedDirectories = useSelector(selectAllDirectories);
+    console.log(modifiedDirectories)
+
 
     useEffect(() => {
         dispatch(getDirectoriesAsync());

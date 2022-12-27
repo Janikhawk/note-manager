@@ -1,5 +1,7 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
 import {createDirectory, getDirectories} from "../../services/directory-api";
+
+const directoryAdapter = createEntityAdapter();
 
 export const getDirectoriesAsync = createAsyncThunk('directories/getDirectories', async() => {
     const response = await getDirectories();
@@ -10,11 +12,11 @@ export const createDirectoryAsync = createAsyncThunk('directories/createDirector
     return createDirectory(directory);
 });
 
-const initialState = {
+const initialState = directoryAdapter.getInitialState({
     data: [],
     isLoading: false,
     error: null,
-};
+});
 
 export const directorySlice = createSlice({
     name: 'directories',
@@ -35,6 +37,7 @@ export const directorySlice = createSlice({
             .addCase(getDirectoriesAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.data = action.payload;
+                directoryAdapter.setAll(state, getChildren(action.payload))
             })
             .addCase(getDirectoriesAsync.rejected, (state, action) => {
                 state.isLoading = false;
@@ -57,6 +60,12 @@ export const directorySlice = createSlice({
 export const {toggleFolder} = directorySlice.actions;
 
 export default directorySlice.reducer;
+
+export const {selectAll: selectAllDirectories, selectById: selectDirectoryById } = directoryAdapter.getSelectors((state) => state.directories);
+
+function getChildren(list) {
+    return list.map(listItem => ({...listItem, children: list.filter(innerListItem => innerListItem.parentId && innerListItem.parentId === listItem.id).map(innerListItem => innerListItem.id)}));
+}
 
 function normalizeList(list) {
     const idMapping = list.reduce((acc, el, i) => {
