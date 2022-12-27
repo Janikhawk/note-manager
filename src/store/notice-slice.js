@@ -51,9 +51,9 @@ export const noticeSlice = createSlice({
     }
 });
 
-export const { selectAll: selectAllNotices } = noticesAdapter.getSelectors(state => state[noticesStateName]);
+export const { selectAll: selectAllNotices, selectById: selectNoticeById } = noticesAdapter.getSelectors(state => state[noticesStateName]);
 
 const selectSelf = (state) => state
-export const selectByDirectoryId = (folderId) => createSelector(selectSelf, (state) => {
-    return Object.values(state.notices.entities).filter(item => item.directoryId == folderId)
+export const selectByDirectoryId = (directoryId) => createSelector(selectSelf, (state) => {
+    return Object.values(state.notices.entities).filter(item => item.directoryId == directoryId)
 });

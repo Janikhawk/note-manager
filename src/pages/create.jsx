@@ -6,9 +6,9 @@ import {createNoticeAsync} from "../store/notice-slice";
 
 
 export default function CreateNote() {
-    const {folderId = 1} = useParams();
-    const noteInitialValue = {title: null, description: null, directoryId: folderId};
-    const folderInitialValue = {parentId: folderId, name: null};
+    const {directoryId = 1} = useParams();
+    const noteInitialValue = {title: null, description: null, directoryId: directoryId};
+    const folderInitialValue = {parentId: directoryId, name: null};
 
     const [data, setData] = useState({
         dataType: 'FILE',

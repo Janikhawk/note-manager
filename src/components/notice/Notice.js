@@ -1,11 +1,18 @@
-import {MdDeleteForever} from 'react-icons/md';
+import {MdDeleteForever, MdModeEdit} from 'react-icons/md';
 import {useDispatch} from "react-redux";
-import './Note.css';
+import './Notice.css';
 import {deleteNoticeAsync} from "../../store/notice-slice";
+import {useNavigate} from "react-router-dom";
 
-const Note = ({notice}) => {
+export const Notice = ({notice}) => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleEditNotice = () => {
+        console.log(notice);
+        navigate(`/notice/${notice.id}/edit`)
+    }
 
     const handleDeleteNotice = () => {
         let text = "Are you sure to delete selected notice?";
@@ -18,10 +25,8 @@ const Note = ({notice}) => {
         <span>{notice.title}</span>
         <span>{notice.description}</span>
         <div className='note-footer'>
-            <small></small>
+            <MdModeEdit className='delete-icon' size='1.3em' onClick={handleEditNotice}/>
             <MdDeleteForever className='delete-icon' size='1.3em' onClick={handleDeleteNotice}/>
         </div>
     </div>
 };
-
-export default Note;
