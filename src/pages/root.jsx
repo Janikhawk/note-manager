@@ -1,11 +1,16 @@
-import {useEffect, useState} from "react";
-import {Form, Outlet, redirect, useNavigate, useNavigation, useParams, useSubmit} from "react-router-dom";
+import {useEffect} from "react";
+import {Form, Outlet, redirect, useNavigate, useNavigation, useSubmit} from "react-router-dom";
 import './root.css';
 import Folder from "../components/directory/Folder";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
-import {getDirectoriesAsync, selectAllDirectories, selectRootLevel} from "../store/directory-slice";
+import {
+    deleteDirectoryAsync,
+    getDirectoriesAsync,
+    selectAllDirectories,
+    selectRootLevel
+} from "../store/directory-slice";
 
 
 // export async function rootLoader({request}) {
@@ -46,8 +51,14 @@ export default function Root() {
     const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
     const handleEditClick = () => {
-        console.log('EDIT');
         navigate(`directory/${selectedFolder}/edit`);
+    }
+
+    const handleDeleteClick = () => {
+        let text = "Are you sure to delete selected folder?\nAll notices inside of that folder will also be deleted.";
+        if (window.confirm(text) == true) {
+            dispatch(deleteDirectoryAsync(selectedFolder))
+        }
     }
 
     return (
@@ -58,7 +69,7 @@ export default function Root() {
                     <Button className='sidebar-button' icon={MdAddCircleOutline} type='submit'/>
                 </Form>
                 <Button className='sidebar-button' icon={MdMode} type='button' onClick={() => handleEditClick()}/>
-                <Button className='sidebar-button' icon={MdOutlineDeleteForever} type='button' onClick={() => handleEditClick()}/>
+                <Button className='sidebar-button' icon={MdOutlineDeleteForever} type='button' onClick={() => handleDeleteClick()}/>
             </div>
             <div id='sidebar'>
                 <div>

@@ -1,21 +1,28 @@
 import {createAsyncThunk, createEntityAdapter, createSlice} from "@reduxjs/toolkit";
-import {createDirectory, getDirectories, updateDirectory} from "../services/directory-api";
+import {createDirectory, deleteDirectory, getDirectories, updateDirectory} from "../services/directory-api";
+
+export const directoryStateName = 'directories';
 
 const directoryAdapter = createEntityAdapter();
 
-export const getDirectoriesAsync = createAsyncThunk('directories/getDirectories', async() => {
+export const getDirectoriesAsync = createAsyncThunk(`${directoryStateName}/getDirectories`, async() => {
     const response = await getDirectories();
     return (response.data);
 });
 
-export const createDirectoryAsync = createAsyncThunk('directories/createDirectory', async(directory) => {
+export const createDirectoryAsync = createAsyncThunk(`${directoryStateName}/createDirectory`, async(directory) => {
     const response = await createDirectory(directory);
     return response.data;
 });
 
-export const updateDirectoryAsync = createAsyncThunk('directories/updateDirectory', async(directory) => {
+export const updateDirectoryAsync = createAsyncThunk(`${directoryStateName}/updateDirectory`, async(directory) => {
     const response = await updateDirectory(directory);
     return response.data;
+})
+
+export const deleteDirectoryAsync = createAsyncThunk(`${directoryStateName}/deleteDirectory`, async(directoryId) => {
+    await deleteDirectory(directoryId);
+    return directoryId;
 })
 
 const initialState = directoryAdapter.getInitialState({
@@ -68,6 +75,9 @@ export const directorySlice = createSlice({
                     id: directory.id,
                     changes: directory
                 })
+            })
+            .addCase(deleteDirectoryAsync.fulfilled, (state, {payload: directoryId}) => {
+                directoryAdapter.removeOne(state, directoryId)
             })
     }
 });
