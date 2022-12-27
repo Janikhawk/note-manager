@@ -29,7 +29,7 @@ const initialState = directoryAdapter.getInitialState({
     isLoading: false,
     error: null,
     selectedDirectory: null,
-    data: [],
+    filteredIdList: [],
 });
 
 export const directorySlice = createSlice({
@@ -82,11 +82,24 @@ export const directorySlice = createSlice({
     }
 });
 
-export const {toggleDirectory} = directorySlice.actions;
+function addParentId(directoryIdList, entities) {
+    const filteredIdList = [];
+    const parentIdList = [];
+    directoryIdList.forEach(directoryId => {
+        if (!filteredIdList.includes(directoryId)) {
+            filteredIdList.push(parseInt(directoryId));
+        }
+        if (entities[directoryId].parentId && !parentIdList.includes(entities[directoryId].parentId)) {
+            parentIdList.push(parseInt(entities[directoryId].parentId));
+        }
+    });
+    return parentIdList.length ? [...filteredIdList, ...addParentId(parentIdList, entities)] : filteredIdList;
+};
 
-export default directorySlice.reducer;
+export const {toggleDirectory, filterDirectories} = directorySlice.actions;
 
-export const {selectAll: selectAllDirectories, selectById: selectDirectoryById, selectEntities: entities } = directoryAdapter.getSelectors((state) => state.directories);
+
+export const {selectById: selectDirectoryById, selectEntities: entities } = directoryAdapter.getSelectors((state) => state.directories);
 
 function getChildren(list) {
     return list.map(listItem =>
@@ -101,3 +114,8 @@ const selectSelf = (state) => state
 export const selectRootLevel = () => createSelector(selectSelf, (state) => {
     return Object.values(state.directories.entities).filter(item => item.parentId == 1).map(item => item.id);
 });
+
+export const selectAvailableIds = () => createSelector(selectSelf, (state) => {
+    const directoryWithNoticesIdList = !!state.notices.filterName ? [...new Set(state.notices.data.map(item => item.directoryId))] : [];
+    return addParentId(directoryWithNoticesIdList, state.directories.entities);
+})

@@ -2,15 +2,17 @@ import * as icons from "react-icons/md";
 import * as faIcons from "react-icons/fa";
 import './Directory.css';
 import {useDispatch, useSelector} from "react-redux";
-import {entities, toggleDirectory} from "../../store/directory-slice";
+import {entities, selectAvailableIds, toggleDirectory} from "../../store/directory-slice";
 
 export const Directory = ({idList}) => {
     const directoriesMap = useSelector(entities);
     const selectedDirectory = useSelector(state => state.directories.selectedDirectory);
+    const directoryWithSearchedNoticesIdList = useSelector(selectAvailableIds());
+    const availableIdList = directoryWithSearchedNoticesIdList.length ? idList.filter(id => directoryWithSearchedNoticesIdList.includes(id)) : idList;
 
     const dispatch = useDispatch();
 
-    return (idList.map((id) => (
+    return (availableIdList.map((id) => (
         <div key={directoriesMap[id].id}>
             <div
                 className={`directory-row ${directoriesMap[id].id === selectedDirectory ? 'selected' : ''}` }

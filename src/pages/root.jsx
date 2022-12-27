@@ -5,13 +5,9 @@ import {Directory} from "../components/directory/Directory";
 import {MdAddCircleOutline, MdMode, MdOutlineDeleteForever} from "react-icons/md";
 import Button from "../components/Button/button";
 import {useDispatch, useSelector} from "react-redux";
-import {
-    deleteDirectoryAsync,
-    getDirectoriesAsync,
-    selectAllDirectories,
-    selectRootLevel
-} from "../store/directory-slice";
+import {deleteDirectoryAsync, getDirectoriesAsync, selectRootLevel} from "../store/directory-slice";
 import {Input} from "../components/Input/input";
+import {getNoticesAsync} from "../store/notice-slice";
 
 
 export async function rootAction({request, params}) {
@@ -24,12 +20,16 @@ export default function Root() {
     const navigation = useNavigation();
     const navigate = useNavigate();
 
-    const dispatch = useDispatch();
-    const directoriesRootIds = useSelector(selectRootLevel());
     const selectedDirectory = useSelector(state => state.directories.selectedDirectory);
+    const directoriesRootIds = useSelector(selectRootLevel());
+
+    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getDirectoriesAsync());
+        dispatch(getNoticesAsync());
     }, [dispatch])
 
     useEffect(() => {
@@ -38,8 +38,7 @@ export default function Root() {
         } else {
             navigate('/');
         }
-    }, [selectedDirectory])
-
+    }, [selectedDirectory]);
 
     const handleEditClick = () => {
         navigate(`directory/${selectedDirectory}/edit`);
@@ -51,8 +50,6 @@ export default function Root() {
             dispatch(deleteDirectoryAsync(selectedDirectory))
         }
     }
-
-    const searching = navigation.location && new URLSearchParams(navigation.location.search).has('searchInput');
 
     return (
         <>
