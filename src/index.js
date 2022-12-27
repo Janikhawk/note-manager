@@ -9,7 +9,7 @@ import EditFolder, {editAction} from './pages/edit';
 import {destroyAction} from './pages/destroy';
 import CreateNote from './pages/create';
 import {Provider} from 'react-redux/es/exports';
-import NoteList, {folderAction, folderLoader} from "./components/notice/NoteList";
+import NoteList, {folderAction} from "./components/notice/NoteList";
 import {store} from "./store/store";
 
 const router = createBrowserRouter([
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
           {
             path: 'directory/:folderId',
             element: <NoteList/>,
-            loader: folderLoader,
+            // loader: folderLoader,
             action: folderAction
           },
           {

@@ -18,12 +18,12 @@ export const createDirectoryAsync = createAsyncThunk(`${directoryStateName}/crea
 export const updateDirectoryAsync = createAsyncThunk(`${directoryStateName}/updateDirectory`, async(directory) => {
     const response = await updateDirectory(directory);
     return response.data;
-})
+});
 
 export const deleteDirectoryAsync = createAsyncThunk(`${directoryStateName}/deleteDirectory`, async(directoryId) => {
     await deleteDirectory(directoryId);
     return directoryId;
-})
+});
 
 const initialState = directoryAdapter.getInitialState({
     isLoading: false,
@@ -47,7 +47,6 @@ export const directorySlice = createSlice({
             })
             .addCase(getDirectoriesAsync.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = action.payload;
                 directoryAdapter.setAll(state, getChildren(action.payload))
             })
             .addCase(getDirectoriesAsync.rejected, (state, action) => {

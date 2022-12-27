@@ -1,7 +1,8 @@
 import {useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch} from "react-redux";
-import {createDirectoryAsync, updateDirectoryAsync} from "../store/directory-slice";
+import {createDirectoryAsync} from "../store/directory-slice";
+import {createNoticeAsync} from "../store/notice-slice";
 
 
 export default function CreateNote() {
@@ -21,8 +22,12 @@ export default function CreateNote() {
     const createDirectory = async (event) => {
         try {
             event.preventDefault();
-            const finalData = data.dataType === 'FILE' ? data.note : data.folder;
-            dispatch(createDirectoryAsync(finalData));
+            if (data.dataType === 'FILE') {
+                dispatch(createNoticeAsync(data.note));
+
+            } else {
+                dispatch(createDirectoryAsync(data.folder));
+            }
             navigate(-1);
         } catch(err) {
             console.log(err)
@@ -57,6 +62,7 @@ export default function CreateNote() {
                             name="description"
                             defaultValue={data.note.description}
                             rows={6}
+                            onChange={(event) => setData({ ...data, note: {...data.note, description: event.target.value}})}
                         />
                     </label>
                 </>

@@ -1,11 +1,14 @@
 import Note from './Note';
-import {getNoteListByFolderId, updateNote} from "../../services/note-service";
-import {useLoaderData} from "react-router-dom";
+import {getNoteListByFolderId} from "../../services/note-service";
+import {useLoaderData, useParams} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "react";
+import {getNoticesAsync, selectAllNotices, selectByDirectoryId} from "../../store/notice-slice";
 
-export async function folderLoader({params}) {
-    const notices =  await getNoteListByFolderId(params.folderId);
-    return {notices};
-}
+// export async function folderLoader({params}) {
+//     const noticeList = useSelector(selectByDirectoryId(folderId));
+//     return {noticeList};
+// }
 
 export async function folderAction({request, params}) {
     let formData = await request.formData();
@@ -15,11 +18,18 @@ export async function folderAction({request, params}) {
 }
 
 const NoteList = () => {
-    const {notices} = useLoaderData();
+    const {folderId} = useParams();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getNoticesAsync());
+    }, [dispatch])
+
+    const noticeList = useSelector(selectByDirectoryId(folderId));
+
     return (
         <div className='note-list'>
-            {notices.map((notice) => (
-                <Note key={notice.id} title={notice.title} description={notice.description}/>
+            {noticeList.map((notice) => (
+                <Note key={notice.id} notice={notice}/>
             ))}
         </div>
     )
