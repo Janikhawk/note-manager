@@ -36,10 +36,13 @@ export const directorySlice = createSlice({
     name: 'directories',
     initialState,
     reducers: {
-        toggleDirectory: (state, action) => {
-            state.selectedDirectory = state.selectedDirectory != action.payload ? action.payload : null;
-            state.entities[action.payload].isOpen = !state.entities[action.payload].isOpen;
+        toggleDirectory: (state, {payload: directoryId} ) => {
+            //state.selectedDirectory = state.selectedDirectory != directoryId ? directoryId : null;
+            state.entities[directoryId].isOpen = !state.entities[directoryId].isOpen;
           },
+        selectDirectory: (state, {payload: directoryId}) => {
+            state.selectedDirectory = state.selectedDirectory != directoryId ? directoryId : null;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -96,7 +99,7 @@ function addParentId(directoryIdList, entities) {
     return parentIdList.length ? [...filteredIdList, ...addParentId(parentIdList, entities)] : filteredIdList;
 };
 
-export const {toggleDirectory, filterDirectories} = directorySlice.actions;
+export const {toggleDirectory, selectDirectory} = directorySlice.actions;
 
 
 export const {selectById: selectDirectoryById, selectEntities: entities } = directoryAdapter.getSelectors((state) => state.directories);
