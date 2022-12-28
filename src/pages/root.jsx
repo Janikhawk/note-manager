@@ -56,7 +56,7 @@ export default function Root() {
             <div>
                 <div className='search'>
                     <form id='search-form' role='search'>
-                        <Input searching={searching}/>
+                        <Input/>
                         <div className='search-spinner' aria-hidden hidden={!searching}/>
                         <div className='sr-only' aria-live="polite"/>
                     </form>

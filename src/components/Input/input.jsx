@@ -1,33 +1,44 @@
-import {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {setFilter} from "../../store/notice-slice";
+import {useDispatch, useSelector} from "react-redux";
+import {selectAllNotices, setFilter} from "../../store/notice-slice";
+import {ReactSearchAutocomplete} from 'react-search-autocomplete'
 
-export const Input = ({searching}) => {
+export const Input = () => {
 
-    const [searchTerm, setSearchTerm] = useState('');
     const dispatch = useDispatch();
+    const notices = useSelector(selectAllNotices);
 
-    useEffect(() => {
-        const delayDebounceFn = setTimeout(() => {
-            dispatch(setFilter(searchTerm))
-        }, 400)
-
-        return () => clearTimeout(delayDebounceFn)
-    }, [searchTerm])
+    const handleOnSearch = (string, results) => {
+        dispatch(setFilter(string))
+    }
 
 
-    const handleSearchInputChange = (event) => {
-        setSearchTerm(event.target.value);
-    };
+    const handleOnSelect = (item) => {
+        dispatch(setFilter(item.title))
+    }
 
-    return <input
-        id='searchInput'
-        className={[searching ? 'loading' : '', 'text-input'].join(' ')}
-        aria-label='Search notes'
-        placeholder='Search'
-        type='search'
-        name='searchInput'
-        defaultValue={searchTerm}
-        onChange={handleSearchInputChange}
-    />;
+    const formatResult = (item) => {
+        return (
+            <>
+                <span style={{ display: 'block', textAlign: 'left' }}>title: {item.title}</span>
+                <span style={{ display: 'block', textAlign: 'left' }}>description: {item.description}</span>
+            </>
+        )
+    }
+
+    return (
+        <>
+            <div style={{ width: 400 }}>
+                <ReactSearchAutocomplete
+                    items={notices}
+                    fuseOptions={{ keys: ["title", "description"] }}
+                    resultStringKeyName="title"
+                    onSearch={handleOnSearch}
+                    onSelect={handleOnSelect}
+                    formatResult={formatResult}
+                    inputDebounce={400}
+                />
+            </div>
+        </>)
+
+
 }
