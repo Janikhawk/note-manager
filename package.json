@@ -22,6 +22,7 @@
     "react-router-dom": "^6.5.0",
     "react-scripts": "5.0.1",
     "react-search-autocomplete": "^8.2.1",
+    "react-tag-input": "^6.8.1",
     "redux": "^4.2.0",
     "sort-by": "^1.2.0",
     "use-resize-observer": "^9.1.0",
