@@ -2,7 +2,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectAllNotices, setFilter} from "../../store/notice-slice";
 import {ReactSearchAutocomplete} from 'react-search-autocomplete'
 
-export const Input = () => {
+export const SearchInput = () => {
 
     const dispatch = useDispatch();
     const notices = useSelector(selectAllNotices);

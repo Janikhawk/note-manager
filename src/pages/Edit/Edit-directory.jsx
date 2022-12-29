@@ -1,6 +1,7 @@
+import '../../styles/input.css';
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {selectDirectoryById, updateDirectoryAsync} from "../store/directory-slice";
+import {selectDirectoryById, updateDirectoryAsync} from "../../store";
 
 export default function EditDirectory() {
     const navigate = useNavigate();
@@ -25,8 +26,8 @@ export default function EditDirectory() {
     }
 
     return (
-        <form id="folder-form" onSubmit={(e) => updateDirectory(e)}>
-            <label>
+        <form className="form" onSubmit={(e) => updateDirectory(e)}>
+            <label className='label'>
                 <span>Name</span>
                 <input
                     className="text-input"
@@ -37,11 +38,12 @@ export default function EditDirectory() {
                     onChange = {changeName}
                 />
             </label>
-            <p>
-                <button type="submit">Save</button>
+            <p className='form-buttons'>
+                <button className='button' type="submit">Save</button>
                 <button
+                    className='button'
                     type="button"
-                    onClick={() => { navigate(-1); }}
+                    onClick={() => navigate(-1)}
                 >Cancel</button>
             </p>
         </form>

@@ -2,26 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
-import ErrorPage from './pages/error-page';
-import Root, {rootAction} from './pages/root';
-import DefaultIndex from './pages/default-index';
-import EditDirectory from './pages/edit-directory';
-import {destroyAction} from './pages/destroy';
-import CreateNote from './pages/create';
+import ErrorPage from './pages/Error-page/Error-page';
+import DefaultIndex from './pages/Default-page/Default-index';
+import EditDirectory from './pages/Edit/Edit-directory';
+import CreateNote from './pages/Create/Create';
 import {Provider} from 'react-redux/es/exports';
-import {store} from "./store/store";
-import EditNotice from "./pages/edit-notice";
-import {NoticeList} from "./components/notice/Notice-list";
+import {store} from "./store";
+import EditNotice from "./pages/Edit/Edit-notice";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "react-dnd";
-import {DirectoryContent} from "./pages/directory-content";
+import {DirectoryContent} from "./pages/Directory-content/Directory-content";
+import App from "./pages/App/App";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root/>,
+    element: <App/>,
     errorElement: <ErrorPage />,
-    action: rootAction,
     children: [
       {
         errorElement: <ErrorPage/>,
@@ -46,12 +43,6 @@ const router = createBrowserRouter([
           {
             path: 'directory/:directoryId/edit',
             element: <EditDirectory />,
-          },
-
-          {
-              path: "notes/:noteId/destroy",
-              action: destroyAction,
-              errorElement: <div>Oops! There was an error.</div>,
           },
         ]
       }

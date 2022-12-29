@@ -1,6 +1,8 @@
-export default function DefaultIndex() {
+import './Default.css';
+
+export default function Default() {
     return (
-        <p id="zero-state">
+        <p className="zero-state">
             This is a demo for Note manager
             <br />
             Check out {' '} GitLab
