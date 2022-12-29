@@ -1,25 +1,52 @@
 import {Notice} from './Notice';
-import {useParams} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import './Notice-list.css';
-import {selectByDirectoryId} from "../../store/notice-slice";
+import {updateNoticesPositions} from "../../store/notice-slice";
+import {useCallback, useEffect, useState} from "react";
+import update from 'immutability-helper'
 
-export const NoticeList = () => {
-    const {directoryId} = useParams();
-    const noticeList = useSelector(selectByDirectoryId(directoryId));
+export const ItemTypes = {
+    CARD: 'card',
+}
+
+export function NoticeList({noticeList}) {
+    const [notices, setNotices] = useState(noticeList);
+
+    useEffect(() => {
+        setNotices(noticeList);
+    }, [noticeList]);
+
+    const dispatch = useDispatch();
+    const moveNotice = useCallback(
+        (id, toIndex, fromIndex) => {
+            dispatch(updateNoticesPositions(update(notices, {
+                $splice: [
+                    [fromIndex, 1],
+                    [toIndex, 0, notices[fromIndex]],
+                ],
+            })))
+        },
+        [notices, setNotices, dispatch],
+    );
 
     return (
-        <>
-            {noticeList.length > 0 ?
-                (
-                    <div className='note-list'>
-                        {noticeList.map((notice) => (
-                            <Notice key={notice.id} notice={notice}/>
-                        ))}
-                    </div>
-                ) :
-                (<i>No notices in current directory</i>)
-            }
-        </>
+            <div>
+                {notices.length > 0 ?
+                    (
+                        <div  className='note-list'>
+                            {notices.map((notice, index) => (
+                                <Notice
+                                    key={notice.id}
+                                    id={notice.id}
+                                    notice={notice}
+                                    moveNotice={moveNotice}
+                                    index={index}
+                                />
+                            ))}
+                        </div>
+                    ) :
+                    (<i>No notices in current directory</i>)
+                }
+            </div>
     )
 };

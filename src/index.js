@@ -12,6 +12,9 @@ import {Provider} from 'react-redux/es/exports';
 import {store} from "./store/store";
 import EditNotice from "./pages/edit-notice";
 import {NoticeList} from "./components/notice/Notice-list";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {DndProvider} from "react-dnd";
+import {DirectoryContent} from "./pages/directory-content";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +29,7 @@ const router = createBrowserRouter([
           { index: true, element: <DefaultIndex/>},
           {
             path: 'directory/:directoryId',
-            element: <NoticeList/>,
+            element: <DirectoryContent/>,
           },
           {
             path: 'directory/new',
@@ -60,7 +63,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
   <Provider store={store}>
-    <RouterProvider router={router} />
+    <DndProvider backend={HTML5Backend}>
+      <RouterProvider router={router} />
+    </DndProvider>
   </Provider>
   // </React.StrictMode>
 );

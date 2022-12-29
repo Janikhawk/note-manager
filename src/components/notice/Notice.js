@@ -3,14 +3,44 @@ import {useDispatch} from "react-redux";
 import './Notice.css';
 import {deleteNoticeAsync} from "../../store/notice-slice";
 import {useNavigate} from "react-router-dom";
+import {useDrag, useDrop} from "react-dnd";
+import {ItemTypes} from "./Notice-list";
+import {memo} from "react";
 
-export const Notice = ({notice}) => {
+export function Notice({notice, moveNotice, id, index}) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const [, drag] = useDrag(
+        () => ({
+            type: ItemTypes.CARD,
+            item: { id, index },
+            end: (item, monitor) => {
+                const { id: droppedId, index: fromIndex } = item;
+                if (!monitor.didDrop()) {
+                    console.log(droppedId, index, fromIndex)
+                    moveNotice(droppedId, index, fromIndex)
+                }
+            },
+        }),
+        [id, index, moveNotice],
+    )
+
+    const [, drop] = useDrop(
+        () => ({
+            accept: ItemTypes.CARD,
+            drop(obj) {
+                const { id: draggedId, index: fromIndex } = obj;
+                if (draggedId !== id) {
+                    moveNotice(draggedId, index, fromIndex)
+                }
+            },
+        }),
+        [id, index, moveNotice],
+    )
+
     const handleEditNotice = () => {
-        console.log(notice);
         navigate(`/notice/${notice.id}/edit`)
     }
 
@@ -21,7 +51,7 @@ export const Notice = ({notice}) => {
         }
     }
 
-    return <div className='note'>
+    return <div className='note' ref={(node) => drag(drop(node))}>
         <span>{notice.title}</span>
         <span>{notice.description}</span>
         <div className='note-footer'>

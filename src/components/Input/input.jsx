@@ -11,7 +11,6 @@ export const Input = () => {
         dispatch(setFilter(string))
     }
 
-
     const handleOnSelect = (item) => {
         dispatch(setFilter(item.title))
     }

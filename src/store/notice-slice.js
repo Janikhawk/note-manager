@@ -15,9 +15,20 @@ export const createNoticeAsync = createAsyncThunk(`${noticesStateName}/createNot
     return response.data;
 });
 
-export const updateNoticeAsync = createAsyncThunk(`${noticesStateName}/updateNotice`, async(directory) => {
-    const response = await updateNotice(directory);
+export const updateNoticeAsync = createAsyncThunk(`${noticesStateName}/updateNotice`, async(noticeData) => {
+    const response = await updateNotice(noticeData);
     return response.data;
+});
+
+export const updateNoticesPositions = createAsyncThunk(`${noticesStateName}/updateNoticesPosition`, async(noticeList) => {
+    const resultArray = [];
+    await Promise.all(noticeList.map(async(notice, index) => {
+        if (notice.position !== index) {
+            const response = await updateNotice({...notice, position: index});
+            resultArray.push(response.data);
+        }
+    }));
+    return resultArray;
 });
 
 export const deleteNoticeAsync = createAsyncThunk(`${noticesStateName}/deleteNotice`, async(directoryId) => {
@@ -27,7 +38,6 @@ export const deleteNoticeAsync = createAsyncThunk(`${noticesStateName}/deleteNot
 
 const initialState = noticesAdapter.getInitialState({
     filterName: null,
-    data: []
 });
 
 export const noticeSlice = createSlice({
@@ -38,17 +48,15 @@ export const noticeSlice = createSlice({
             state.filterName = filterName;
             const noticeList = Object.values(state.entities);
             state.data = filterName ? noticeList.filter(item => item.title.includes(filterName)) : noticeList;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(getNoticesAsync.fulfilled, (state, {payload: noticeList}) => {
                 noticesAdapter.setAll(state, noticeList);
-                state.data = noticeList;
             })
             .addCase(createNoticeAsync.fulfilled, (state, {payload: notice}) => {
                 noticesAdapter.addOne(state, notice)
-                state.data = [...state.data, notice];
             })
             .addCase(updateNoticeAsync.fulfilled, (state, {payload: notice}) => {
                 noticesAdapter.updateOne(state, {
@@ -59,6 +67,14 @@ export const noticeSlice = createSlice({
             .addCase(deleteNoticeAsync.fulfilled, (state, {payload: noticeId}) => {
                 noticesAdapter.removeOne(state, noticeId)
             })
+            .addCase(updateNoticesPositions.fulfilled, (state, {payload: noticeList}) => {
+                noticeList.length && noticeList.forEach(notice => {
+                    noticesAdapter.updateOne(state, {
+                        id: notice.id,
+                        changes: notice
+                    })
+                });
+            })
     }
 });
 
@@ -68,5 +84,5 @@ export const { selectAll: selectAllNotices, selectById: selectNoticeById } = not
 
 const selectSelf = (state) => state
 export const selectByDirectoryId = (directoryId) => createSelector(selectSelf, (state) => {
-    return state.notices.data.filter(item => item.directoryId == directoryId)
+    return Object.values(state.notices.entities).filter(item => item.directoryId == directoryId).sort((a,b) => a.position - b.position);
 });
