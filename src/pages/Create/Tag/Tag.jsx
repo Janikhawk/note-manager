@@ -1,17 +1,13 @@
 import './Tag.css';
 import {WithContext as ReactTags} from "react-tag-input";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const COUNTRIES = [
     'KAZAKHSTAN', 'RUSSIA', 'USA'
 ];
 
-const suggestions = COUNTRIES.map(country => {
-    return {
-        id: country,
-        text: country
-    };
-});
+const mapToTagsArray = (list) => list.map(listItem => ({id: listItem, text: listItem}));
+const tagsArrayToFlatArray = (list) => list.map(listItem => listItem.text);
 
 const KeyCodes = {
     comma: 188,
@@ -20,21 +16,22 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-export default function Tag() {
+export default function Tag({defaultTags, onTagAdded}) {
 
-    const [tags, setTags] = useState([
-        { id: 'Thailand', text: 'Thailand' },
-        { id: 'India', text: 'India' },
-        { id: 'Vietnam', text: 'Vietnam' },
-        { id: 'Turkey', text: 'Turkey' }
-    ]);
+    const [tags, setTags] = useState([]);
+
+    useEffect(() => {
+        setTags(mapToTagsArray(defaultTags));
+    }, [defaultTags]);
 
     const handleDelete = i => {
         setTags(tags.filter((tag, index) => index !== i));
     };
 
     const handleAddition = tag => {
-        setTags([...tags, tag]);
+        const newTagArr = [...tags, tag];
+        setTags(newTagArr);
+        onTagAdded(tagsArrayToFlatArray(newTagArr));
     };
 
     const handleDrag = (tag, currPos, newPos) => {
@@ -53,7 +50,7 @@ export default function Tag() {
 
     return (<ReactTags
         tags={tags}
-        suggestions={suggestions}
+        suggestions={mapToTagsArray(COUNTRIES)}
         delimiters={delimiters}
         handleDelete={handleDelete}
         handleAddition={handleAddition}

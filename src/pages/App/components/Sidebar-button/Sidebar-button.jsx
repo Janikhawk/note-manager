@@ -13,7 +13,7 @@ export default function SidebarButton() {
     const dispatch = useDispatch();
 
     const handleCreateClick = () => {
-        navigate(`directory/${selectedDirectory}/new`);
+        navigate(selectedDirectory ? `directory/${selectedDirectory}/new` : `directory/new`);
     }
 
     const handleEditClick = () => {

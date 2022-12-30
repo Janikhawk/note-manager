@@ -9,7 +9,7 @@ import Tag from "./Tag/Tag";
 
 export default function CreateNote() {
     const {directoryId = 1} = useParams();
-    const noteInitialValue = {title: null, description: null, directoryId: directoryId};
+    const noteInitialValue = {title: null, description: null, directoryId: directoryId, tags: []};
     const directoryInitialValue = {parentId: directoryId, name: null};
 
     const [data, setData] = useState({
@@ -36,6 +36,9 @@ export default function CreateNote() {
         }
     }
 
+    const handleTagAddition = (tags) => {
+        setData({...data, note: ({...data.note, tags})});
+    }
 
     return (
         <form className="form" onSubmit={createDirectory}>
@@ -71,7 +74,10 @@ export default function CreateNote() {
                     </label>
                     <label className='label'>
                         <span>Tags</span>
-                        <Tag/>
+                        <Tag
+                            defaultTags={data.note.tags}
+                            onTagAdded={handleTagAddition}
+                        />
                     </label>
                 </>
             ) : (
