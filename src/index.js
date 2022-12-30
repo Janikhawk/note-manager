@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './styles/index.css';
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import ErrorPage from './pages/Error-page/Error-page';
-import DefaultIndex from './pages/Default-page/Default-index';
 import EditDirectory from './pages/Edit/Edit-directory';
 import CreateNote from './pages/Create/Create';
 import {Provider} from 'react-redux/es/exports';
@@ -23,7 +22,7 @@ const router = createBrowserRouter([
       {
         errorElement: <ErrorPage/>,
         children: [
-          { index: true, element: <DefaultIndex/>},
+          { index: true, element: <DirectoryContent/>},
           {
             path: 'directory/:directoryId',
             element: <DirectoryContent/>,
