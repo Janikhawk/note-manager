@@ -54,9 +54,12 @@ export function Notice({notice, moveNotice, id, index}) {
     return <div className='note' ref={(node) => drag(drop(node))}>
         <span>{notice.title}</span>
         <span>{notice.description}</span>
+        <div>{notice?.tags?.map(tag => (
+            <span key={tag} className='tag'>{tag}</span>
+        ))}</div>
         <div className='note-footer'>
-            <MdModeEdit className='delete-icon' size='1.3em' onClick={handleEditNotice}/>
-            <MdDeleteForever className='delete-icon' size='1.3em' onClick={handleDeleteNotice}/>
+            <MdModeEdit className='notice-action' size='1.3em' onClick={handleEditNotice}/>
+            <MdDeleteForever className='notice-action' size='1.3em' onClick={handleDeleteNotice}/>
         </div>
     </div>
 };

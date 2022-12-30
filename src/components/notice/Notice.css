@@ -8,12 +8,34 @@
     justify-content: space-between;
 }
 
+/*Title*/
+.note > span:first-child {
+    font-weight: bold;
+}
+/*description*/
+.note > span:nth-child(2) {
+    padding: 1rem;
+}
+
 .note-footer {
+    margin-top: 1rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.delete-icon {
+.tag {
+    padding: 5px;
+    background-color: #84c1f9;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+.notice-action {
+    color: #3992ff;
     cursor: pointer;
+}
+
+.notice-action:hover {
+    color: #1653a3;
 }
