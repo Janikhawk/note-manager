@@ -46,8 +46,8 @@ export default function CreateNote() {
             <label className='label'>
                 <>
                     <span>Type</span>
-                    <input type="radio" name="type" value='FILE' onChange={(event) => setData({...data, directory: directoryInitialValue, dataType: event.target.value})}/> File
-                    <input type="radio" name="type" value='DIRECTORY' onChange={(event) => setData({...data, note: noteInitialValue, dataType: event.target.value})}/> Folder
+                    <input type="radio" name="type" value='FILE' onChange={(event) => setData({...data, directory: directoryInitialValue, dataType: event.target.value})}/> Notice
+                    <input type="radio" name="type" value='DIRECTORY' onChange={(event) => setData({...data, note: noteInitialValue, dataType: event.target.value})}/> Directory
                 </>
             </label>
             {data.dataType === 'FILE' ? (

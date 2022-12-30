@@ -1,0 +1,12 @@
+.advanced {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    color: #979696;
+}
+
+.as-notification {
+    font-style: italic;
+    font-size: small;
+    color: gray;
+}

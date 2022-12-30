@@ -1,4 +1,4 @@
-import {createAsyncThunk, createEntityAdapter, createSelector, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createEntityAdapter, createSelector, createSlice, current} from "@reduxjs/toolkit";
 import {createNotice, deleteNotice, getNotices, updateNotice} from "../services/notice-api";
 
 export const noticesStateName = 'notices';
@@ -46,8 +46,8 @@ export const noticeSlice = createSlice({
     reducers: {
         setFilter: (state, {payload: filterName}) => {
             state.filterName = filterName;
-            const noticeList = Object.values(state.entities);
-            state.data = filterName ? noticeList.filter(item => item.title.includes(filterName)) : noticeList;
+            const noticeList = Object.values(current(state.entities));
+            state.data = filterName ? noticeList.filter(item => item.title?.includes(filterName)) : noticeList;
         },
     },
     extraReducers: (builder) => {
