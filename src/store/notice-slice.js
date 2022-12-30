@@ -86,3 +86,10 @@ const selectSelf = (state) => state
 export const selectByDirectoryId = (directoryId) => createSelector(selectSelf, (state) => {
     return Object.values(state.notices.entities).filter(item => item.directoryId == directoryId).sort((a,b) => a.position - b.position);
 });
+
+export const selectAllNoticesTags = () => createSelector(selectSelf, (state) => {
+    return Object.values(state.notices.entities).reduce((acc, curr) => {
+        curr.tags && acc.push(...curr.tags);
+        return acc;
+    }, [])
+})

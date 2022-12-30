@@ -2,10 +2,6 @@ import './Tag.css';
 import {WithContext as ReactTags} from "react-tag-input";
 import {useEffect, useState} from "react";
 
-const COUNTRIES = [
-    'KAZAKHSTAN', 'RUSSIA', 'USA'
-];
-
 const mapToTagsArray = (list) => list.map(listItem => ({id: listItem, text: listItem}));
 const tagsArrayToFlatArray = (list) => list.map(listItem => listItem.text);
 
@@ -16,7 +12,7 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-export default function Tag({defaultTags, onTagAdded}) {
+export default function Tag({defaultTags, onTagAdded, suggestions}) {
 
     const [tags, setTags] = useState([]);
 
@@ -36,10 +32,8 @@ export default function Tag({defaultTags, onTagAdded}) {
 
     const handleDrag = (tag, currPos, newPos) => {
         const newTags = tags.slice();
-
         newTags.splice(currPos, 1);
         newTags.splice(newPos, 0, tag);
-
         // re-render
         setTags(newTags);
     };
@@ -50,13 +44,13 @@ export default function Tag({defaultTags, onTagAdded}) {
 
     return (<ReactTags
         tags={tags}
-        suggestions={mapToTagsArray(COUNTRIES)}
+        suggestions={mapToTagsArray(suggestions)}
         delimiters={delimiters}
         handleDelete={handleDelete}
         handleAddition={handleAddition}
         handleDrag={handleDrag}
         handleTagClick={handleTagClick}
-        inputFieldPosition="bottom"
+        inputFieldPosition="inline"
         autocomplete
     />)
 }

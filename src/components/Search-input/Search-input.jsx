@@ -20,6 +20,7 @@ export const SearchInput = () => {
             <>
                 <span style={{ display: 'block', textAlign: 'left' }}>title: {item.title}</span>
                 <span style={{ display: 'block', textAlign: 'left' }}>description: {item.description}</span>
+                <span style={{ display: 'block', textAlign: 'left' }}>tags: {item.tags}</span>
             </>
         )
     }
@@ -29,7 +30,7 @@ export const SearchInput = () => {
             <div style={{ width: 400 }}>
                 <ReactSearchAutocomplete
                     items={notices}
-                    fuseOptions={{ keys: ["title", "description"] }}
+                    fuseOptions={{ keys: ["title", "description", "tags"] }}
                     resultStringKeyName="title"
                     onSearch={handleOnSearch}
                     onSelect={handleOnSelect}

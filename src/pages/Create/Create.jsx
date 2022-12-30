@@ -2,8 +2,8 @@ import './Create.css';
 import '../../styles/input.css';
 import {useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {createDirectoryAsync, createNoticeAsync} from "../../store";
+import {useDispatch, useSelector} from "react-redux";
+import {createDirectoryAsync, createNoticeAsync, selectAllNotices, selectAllNoticesTags} from "../../store";
 import Tag from "./Tag/Tag";
 
 
@@ -11,6 +11,7 @@ export default function CreateNote() {
     const {directoryId = 1} = useParams();
     const noteInitialValue = {title: null, description: null, directoryId: directoryId, tags: []};
     const directoryInitialValue = {parentId: directoryId, name: null};
+    const noticesTags = useSelector(selectAllNoticesTags());
 
     const [data, setData] = useState({
         dataType: 'FILE',
@@ -76,6 +77,7 @@ export default function CreateNote() {
                         <span>Tags</span>
                         <Tag
                             defaultTags={data.note.tags}
+                            suggestions={noticesTags}
                             onTagAdded={handleTagAddition}
                         />
                     </label>

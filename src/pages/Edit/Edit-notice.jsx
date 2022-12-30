@@ -1,7 +1,7 @@
 import '../../styles/input.css';
 import {useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {selectNoticeById, updateNoticeAsync} from "../../store";
+import {selectAllNoticesTags, selectNoticeById, updateNoticeAsync} from "../../store";
 import Tag from "../Create/Tag/Tag";
 
 export default function EditNotice() {
@@ -9,6 +9,7 @@ export default function EditNotice() {
     const {noticeId} = useParams();
     const selectedNotice = useSelector(state => selectNoticeById(state, noticeId));
     const noticeData = {...selectedNotice};
+    const noticesTags = useSelector(selectAllNoticesTags());
 
     const dispatch = useDispatch();
 
@@ -54,6 +55,7 @@ export default function EditNotice() {
             <label className='label'>
                 <span>Tags</span>
                 <Tag
+                    suggestions={noticesTags}
                     defaultTags={noticeData.tags || []}
                     onTagAdded={handleTagAddition}
                 />
